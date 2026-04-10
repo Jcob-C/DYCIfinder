@@ -3,9 +3,13 @@ import { API } from '../conf/api.js';
 document.getElementById("prevPageButton").addEventListener("click",prevPage);
 document.getElementById("nextPageButton").addEventListener("click",nextPage);
 document.getElementById("searchButton").addEventListener("click",reloadFoundPostings);
+document.getElementById("sortOptions").addEventListener("change",reorderFoundPostings);
 
+const orderSelection = document.getElementById("sortOptions");
 const foundPostTemplate = document.getElementById("foundPostTemplate");
 const foundPostsContainer = document.getElementById("foundPosts");
+
+let foundPostings;
 
 initPage();
 reloadFoundPostings();
@@ -28,25 +32,48 @@ async function reloadFoundPostings() {
         })
     });
     const response = await result.json();
-    const data = response.data;
-    console.log(data);
-    
+    foundPostings = response.data;
+    console.log(foundPostings);
+
+    clearFoundPostings();
+    loadFoundPostings();
+}
+
+function clearFoundPostings() {
     Array.from(foundPostsContainer.children).forEach(child => {
         if (child.tagName !== "TEMPLATE") {
             child.remove();
         }
     });
+}
 
-    for (let i = 0; i < data.length; i++) {
-        const clone = foundPostTemplate.content.cloneNode(true);
-        clone.querySelector(".title").textContent = data[i]['item_name'];
-        clone.querySelector(".location").textContent = "Found at: " + data[i]['location_found'];
-        clone.querySelector(".date").textContent = "Found on: " + data[i]['date_found'];
-        clone.querySelector(".claimButton").addEventListener("click", function () {
-            window.location.href = `post_claim.html?item_id=${data[i]['id']}`;
-        });
-        foundPostsContainer.appendChild(clone);
+function loadFoundPostings() {
+    if (orderSelection.value == "Newest first") {
+        for (let i = 0; i < foundPostings.length; i++) {
+            loadFoundPosting(foundPostings[i]);
+        }
     }
+    else {
+        for (let i = foundPostings.length-1; i >= 0; i--) {
+            loadFoundPosting(foundPostings[i]);
+        }
+    }
+}
+
+function loadFoundPosting(post) {
+    const clone = foundPostTemplate.content.cloneNode(true);
+    clone.querySelector(".title").textContent = post['item_name'];
+    clone.querySelector(".location").textContent = "Found at: " + post['location_found'];
+    clone.querySelector(".date").textContent = "Found on: " + post['date_found'];
+    clone.querySelector(".claimButton").addEventListener("click", function () {
+        window.location.href = `post_claim.html?item_id=${post['id']}`;
+    });
+    foundPostsContainer.appendChild(clone);
+}
+
+function reorderFoundPostings() {
+    clearFoundPostings();
+    loadFoundPostings();
 }
 
 function initPage() {
