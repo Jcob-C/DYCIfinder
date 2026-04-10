@@ -6,6 +6,61 @@
     <title>DYCIfinder</title>
 </head>
 <body>
+    <div>
+        <h1>DYCIfinder</h1>
+        <p>afahop fhouagf lorep ipsum</p>
+        
+    </div>
+    <div>
+        <button>I found something</button>
+        <button>I lost something</button>
+    </div>
+    <hr>
+    <div>
+        <span>Enter keyword:</span>
+        <input type="text" id="keywordInput">
+        <div>
+            <span>Items that are:</span>
+            <select id="categorySelection">
+                <option>Any</option>
+            </select>
+        </div>
+        <div>
+            <span>Items found at:</span>
+            <select id="locationSelection">
+                <option>Anywhere</option>
+            </select>
+        </div>
+        <button id="searchButton">Apply Filters</button>
+    </div>
+    <div>
+        <p>results:</p>
+        <span>
+            <select>
+                <option>newest</option>
+                <option>oldest</option>
+            </select>
+        </span>
+    </div>
+    <div id="foundPosts">
+        <template id="foundPostTemplate">
+            <div class="foundPost">
+                <h3 class="title">item with non descriptive title</h3>
+                <p class="location">location found: heaven</p>
+                <p class="date">date found: 2/12/1212</p>
+                <button class="claimButton">Post claim with proof of ownership</button>
+            </div>
+        </template>
     
+    </div>
+    <br>
+    <div>
+        <button id="prevPageButton">prev</button>
+        <button id="nextPageButton">next</button>
+    </div>
+    <hr>
+    <button>admin</button>
+
+    <script type="module" src="js/home.js"></script>
 </body>
 </html>
