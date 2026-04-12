@@ -21,7 +21,8 @@ CREATE TABLE found_reports (
     item_name VARCHAR(255) NOT NULL,
     item_category VARCHAR(255),
     description TEXT,
-    image_url VARCHAR(500),
+    image_url1 VARCHAR(500),
+    image_url2 VARCHAR(500),
     location_found VARCHAR(255),
     date_found DATE,
     finder_name VARCHAR(255),
@@ -33,8 +34,12 @@ CREATE TABLE found_reports (
 CREATE TABLE campus_locations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     location_name VARCHAR(255) NOT NULL,
-    campus_name VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE item_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE lost_reports (
@@ -45,6 +50,8 @@ CREATE TABLE lost_reports (
     image_url VARCHAR(500),
     location_lost VARCHAR(255),
     date_lost DATE,
+    proof_image_url1 VARCHAR(500),
+    proof_image_url2 VARCHAR(500),
     report_status VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -53,7 +60,8 @@ CREATE TABLE item_claims (
     id INT AUTO_INCREMENT PRIMARY KEY,
     found_item_id INT NOT NULL,
     claim_description TEXT,
-    proof_image_url VARCHAR(500),
+    proof_image_url1 VARCHAR(500),
+    proof_image_url2 VARCHAR(500),
     claimant_name VARCHAR(255),
     facebook_profile VARCHAR(255),
     contact_number VARCHAR(50),
