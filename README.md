@@ -1,15 +1,38 @@
-# SYSTEM PLAN
-- found items
-    1. anyone can post and will be instructed to bring found items to office (office then would confirm the post and set it to public, includes decoy detail verification where selected identifying details are hidden and used for claim verification)
-    2. anyone can browse and search found items 
-    3. anyone can submit claims to a found item with proof (only visible to office. after office has confirmed the claim and proof, claimant will be contacted through their given contact info)
-- lost items
-    1. anyone can make private posts for office to consider a possible owner (includes proof and detailed description, works the same as claims for found items but not specified to a single item posting)
-- all
-    1. postings goes through office manual verification with system assisted matching of claims and items
-    2. postings have requires a contact info from user since there are no user account requirements
-    3. postings are updated or archived by office, automatically if possible but mostly manual to avoid mistakes
-    4. postings includes images and all details for easier searching, verification, and documentation
+# USERS' SYSTEM PROCESS
+
+### finders' process
+1. finds an item
+2. visit the site
+3. post the item found with all the details and images (only visible to office for now)
+4. instructed to bring the item to office
+
+### admin managing finder posts
+1. view submitted found item report
+2. publicize found item report (after being received and report details are verified)
+
+### losters' process
+1. losts an item
+2. visit the site
+3. reporting lost item (with contact info, detailed item description, and images for proof):
+    1. submit a claim to a posted found item report
+    2. submit a general lost item report
+4. wait for office to contact them
+
+### admin managing loster posts
+1. find match between found item reports and (claims made to them OR general lost item reports)
+2. finds a (claim OR lost item report) matching a found item report
+3. privated and marks the found item post with the (claim OR lost item report)
+4. contact the claim poster or lost item poster outside the website
+5. item will be claimed at the office:
+    1. wrong owner: undo step 3 and go back to step 1
+    2. right owner: archive the resolved found item post
+
+### user features
+
+
+### admin features
+
+
 
 # DATABASE
 ```sql
