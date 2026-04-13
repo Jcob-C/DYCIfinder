@@ -35,62 +35,83 @@
 
 
 # DATABASE
+
 ```sql
 CREATE DATABASE dycifinder;
 USE dycifinder;
 
-CREATE TABLE found_reports (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    item_name VARCHAR(255) NOT NULL,
-    item_category VARCHAR(255),
-    description TEXT,
-    image_url1 VARCHAR(500),
-    image_url2 VARCHAR(500),
-    location_found VARCHAR(255),
-    date_found DATE,
-    finder_name VARCHAR(255),
-    item_status VARCHAR(255),
-    claimant_name VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE campus_locations (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    location_name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    location_name VARCHAR(32)
 );
 
 CREATE TABLE item_categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    category_name VARCHAR(255) NOT NULL
+    category_name VARCHAR(32)
+);
+
+CREATE TABLE found_reports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    item_name VARCHAR(16),
+    item_category VARCHAR(32),
+    item_description TEXT,
+
+    location_found VARCHAR(32),
+    datetime_found TIMESTAMP,
+    
+    image_url1 VARCHAR(512),
+    image_url2 VARCHAR(512),
+
+    finder_name VARCHAR(64),
+
+    report_status VARCHAR(16),
+    claimant_post_type VARCHAR(8), 
+    claimant_post_id INT,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE lost_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    item_name VARCHAR(255) NOT NULL,
-    item_category VARCHAR(255),
-    description TEXT,
-    image_url VARCHAR(500),
-    location_lost VARCHAR(255),
-    date_lost DATE,
-    proof_image_url1 VARCHAR(500),
-    proof_image_url2 VARCHAR(500),
-    report_status VARCHAR(255),
+
+    item_name VARCHAR(16),
+    item_category VARCHAR(32),
+    item_description TEXT,
+
+    location_found VARCHAR(32),
+    datetime_found TIMESTAMP,
+    
+    image_url1 VARCHAR(512),
+    image_url2 VARCHAR(512),
+
+    loster_name VARCHAR(64),
+    facebook_profile VARCHAR(256),
+    contact_number VARCHAR(16),
+    email_address VARCHAR(32)
+
+    report_status VARCHAR(16),
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE item_claims (
     id INT AUTO_INCREMENT PRIMARY KEY,
     found_item_id INT NOT NULL,
+
     claim_description TEXT,
-    proof_image_url1 VARCHAR(500),
-    proof_image_url2 VARCHAR(500),
-    claimant_name VARCHAR(255),
-    facebook_profile VARCHAR(255),
-    contact_number VARCHAR(50),
-    email_address VARCHAR(255),
-    additional_contact TEXT,
+    image_url1 VARCHAR(512),
+    image_url2 VARCHAR(512),
+
+    claimant_name VARCHAR(64),
+    facebook_profile VARCHAR(256),
+    contact_number VARCHAR(16),
+    email_address VARCHAR(32)
+
+    claim_status VARCHAR(16),
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     FOREIGN KEY (found_item_id) REFERENCES found_reports(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
