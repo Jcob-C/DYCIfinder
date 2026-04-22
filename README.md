@@ -41,16 +41,19 @@ USE dycifinder;
 
 CREATE TABLE campus_locations (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    location_name VARCHAR(32)
+    location_name VARCHAR(32),
+    available BOOLEAN
 );
 
 CREATE TABLE item_categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    category_name VARCHAR(32)
+    category_name VARCHAR(32),
+    available BOOLEAN
 );
 
 CREATE TABLE found_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT, -- reporter's id, null if not registered user
 
     item_name VARCHAR(16),
     item_category VARCHAR(32),
@@ -64,15 +67,16 @@ CREATE TABLE found_reports (
 
     finder_name VARCHAR(64),
 
-    report_status VARCHAR(16),
-    claimant_post_type VARCHAR(8), 
-    claimant_post_id INT,
+    report_status VARCHAR(16) DEFAULT 'Pending',
+    claimant_post_type VARCHAR(8), -- claimant/owner's post type (claim post or lost report)
+    claimant_post_id INT, -- claimant/owner's post id
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE lost_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
 
     item_name VARCHAR(16),
     item_category VARCHAR(32),
@@ -89,13 +93,14 @@ CREATE TABLE lost_reports (
     contact_number VARCHAR(16),
     email_address VARCHAR(32),
 
-    report_status VARCHAR(16),
+    report_status VARCHAR(16)  DEFAULT 'Unresolved',
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE item_claims (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
     found_item_id INT NOT NULL,
 
     claim_description TEXT,

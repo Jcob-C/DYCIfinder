@@ -14,6 +14,7 @@ export async function loadSelectOptions(selectionID, apiLink, columnName) {
         option.textContent = data[i][columnName];
         categorySelect.appendChild(option);
     }
+
     const option = document.createElement("option");
     option.textContent = "Other";
     categorySelect.appendChild(option);

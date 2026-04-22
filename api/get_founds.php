@@ -5,8 +5,8 @@ require_once __DIR__ . '/../conf/db.php';
 require_once __DIR__ . '/../db/found_reports.php';
 
 $conn = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
-$data = json_decode(file_get_contents("php://input"), true);
-$output = getFoundReports($conn, $data, $data['page']);
+$data = json_decode(file_get_contents("php://input"), true); // $data should have 'page', 'keyword', 'category', 'location', 'order'
+$output = getPublicFoundReports($conn, $data['page'], $data['keyword'], $data['category'], $data['location'], $data['order']);
 
 echo json_encode(["data" => $output]);
 ?>

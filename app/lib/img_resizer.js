@@ -2,7 +2,7 @@ export async function resizeImage(file) {
   return new Promise((resolve, reject) => {
     const maxWidth = 1024;
     const maxHeight = 1024;
-    const quality = 0.7;
+    const quality = 0.8;
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
