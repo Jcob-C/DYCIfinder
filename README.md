@@ -5,6 +5,7 @@
 3. Initialize the database using the commands below
 4. Move email.php and keys.php to folder /server/conf
 5. Configure values of /app/conf/api.js and files in /server/conf
+6. Get API key for /server/conf/keys.php from https://api.imgbb.com/
 
 ## DATABASE
 
