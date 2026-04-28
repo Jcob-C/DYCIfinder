@@ -90,7 +90,7 @@ async function loadFoundPosts() {
 async function goPrevPage() {
     if (onLastPage === 1) 
         return;
-    page -= 1;
+    currentPage -= 1;
     loadFoundPosts();
     document.getElementById("current-page").textContent = page;
 }
@@ -100,7 +100,7 @@ async function goPrevPage() {
 async function goNextPage() {
     if (onLastPage) 
         return;
-    page += 1;
+    currentPage += 1;
     loadFoundPosts();
     document.getElementById("current-page").textContent = page;
 }
