@@ -104,7 +104,8 @@ CREATE TABLE users(
     student_no VARCHAR(16),
     facebook_profile VARCHAR(255),
     contact_number VARCHAR(16),
-    user_role VARCHAR(8),
+
+    user_role VARCHAR(8) DEFAULT 'Normal',
 
     register_code INT,
     regis_code_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
