@@ -9,15 +9,15 @@ require_once __DIR__ . '/../lib/img_host.php';
 try {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
+    $contactNumber = $_POST['claimpost_ownerphone'];
+    $description = $_POST['claimpost_description'];
+    $facebookProfile = $_POST['claimpost_ownerfb'];
+    $emailAddress = $_POST['claimpost_owneremail'];
+    $ownerName = $_POST['claimpost_ownername'];
     $userID = $_SESSION['userID'] ?? null;
     $itemID = $_POST['item_id'];
-    $description = $_POST['claimpost_description'];
     $imageURL1 = null;
     $imageURL2 = null;
-    $ownerName = $_POST['claimpost_ownername'];
-    $facebookProfile = $_POST['claimpost_ownerfb'];
-    $contactNumber = $_POST['claimpost_ownerphone'];
-    $emailAddress = $_POST['claimpost_owneremail'];
 
     // Convert image uploads to URLs with free image hosting
     $tmpDir = sys_get_temp_dir();                                                                       // Get the system temporary directory

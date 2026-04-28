@@ -24,7 +24,7 @@ async function loadItemInfo() {
     }
 
     try {
-        const result = await fetch(`${API_URL}/get_foundreport.php`, {
+        const result = await fetch(`${API_URL}/post_claim/get_foundreport.php`, {
             method: "POST",
             headers: {
                 "Content-Type":
@@ -100,7 +100,7 @@ async function claimPost() {
         formData.append("claimpost_image1", resized1);
         formData.append("claimpost_image2", resized2);
 
-        const result = await fetch(`${API_URL}/post_itemclaim.php`, {
+        const result = await fetch(`${API_URL}/post_claim/post_itemclaim.php`, {
             method: "POST",
             body: formData
         });
