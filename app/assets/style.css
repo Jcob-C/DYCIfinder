@@ -52,9 +52,9 @@ header button {
     display: grid;
     gap: 12px;
     justify-content: flex-start;
-    border: none;
-    color: #ffffff;
-    background-color: transparent;
+    /* border: none; */
+    /* color: #ffffff;
+    background-color: transparent; */
 }
 
 .filters-container {
@@ -62,5 +62,5 @@ header button {
 }
 
 main {
-    padding-top: 60px;
+    padding-top: 80px;
 }
