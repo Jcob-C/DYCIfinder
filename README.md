@@ -101,7 +101,7 @@ CREATE TABLE users(
     hashed_pass VARCHAR(512),
 
     full_name VARCHAR(255),
-    student_no VARCHAR(16),
+    student_id VARCHAR(16),
     facebook_profile VARCHAR(255),
     contact_number VARCHAR(16),
 

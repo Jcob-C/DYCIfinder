@@ -34,7 +34,7 @@ async function submitLoginForm() {
     }
 
     try {
-        const result = await fetch(API_URL + "/auth/login.php", {
+        const result = await fetch(API_URL + "/account/login.php", {
             method: "POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({ 
@@ -93,7 +93,7 @@ async function submitRegisterForm() {
     }
 
     try {
-        const result = await fetch(API_URL + "/auth/register.php", {
+        const result = await fetch(API_URL + "/account/register.php", {
             method: "POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({ 
@@ -106,10 +106,10 @@ async function submitRegisterForm() {
         if (response.success) {
             await popupMessage("Registration successful!<br><br>You can now login.");
             changeForm("login");
-            email.value = "";
-            code.value = "";
-            password.value = "";
-            confirmPassword.value = "";
+            document.getElementById("register-pass1").value = "";
+            document.getElementById("register-pass0").value = "";
+            document.getElementById("register-code").value = "";
+            document.getElementById("register-email").value = "";
         }
         else throw new Error();
     }
@@ -143,7 +143,7 @@ async function requestCode() {
     }
 
     try {
-        const result = await fetch(API_URL + "/auth/request_code.php", {
+        const result = await fetch(API_URL + "/account/request_code.php", {
             method: "POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({

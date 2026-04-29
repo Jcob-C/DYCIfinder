@@ -83,3 +83,31 @@ function edit_user_attribute($conn, $id, $column, $input) { // return success, t
     $stmt->close();
     return $result;
 }
+
+
+
+function get_user($conn, $id) { // return null or ['id' => int, 'user_role' => string]
+    $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+
+    $stmt->close();
+    return $row;
+}
+
+
+
+function update_user_profile($conn, $id, $fullname, $studentid, $fbprofile, $contactno) { // return success, true or false
+    $stmt = $conn->prepare("
+        UPDATE users SET full_name = ?, student_id = ?, facebook_profile = ?, contact_number = ? WHERE id = ?
+    ");
+
+    $stmt->bind_param("ssssi", $fullname, $studentid, $fbprofile, $contactno, $id);
+    $result = $stmt->execute();
+
+    $stmt->close();
+    return $result;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/popups.css">
+    <title>DYCIfinder</title>
+</head>
+<body>
+    <header>
+        <h1><a href="index.html">DYCIfinder</a></h1>
+        <button onclick="window.location.href='profile.html'">Profile</button>
+        <button onclick="window.location.href='search_found.html'">Browse found items</button>
+        <button onclick="window.location.href='report_found.html'">I found something</button>
+        <button onclick="window.location.href='report_lost.html'">I lost something</button>
+        <hr>
+    </header>
+
+    <button id="login-tabbtn">Login</button>
+    <button id="register-tabbtn">Register</button>
+
+    <div id="login-form">
+        <input type="email" id="login-email">
+        <input type="password" id="login-pass">
+        <button id="login-btn">Log in</button>
+    </div>
+
+    <div id="register-form" style="display: none;">
+        <label>Email</label>
+        <input type="email" id="register-email"><button id="getcode-btn">Get code</button>
+        <label>Code</label>
+        <input type="text" id="register-code">
+        <label>Password</label>
+        <input type="password" id="register-pass0">
+        <input type="password" id="register-pass1">
+        <button id="register-btn">Register</button>
+    </div>
+
+    <script type="module" src="js/account.js"></script>
+</body>
+</html>
