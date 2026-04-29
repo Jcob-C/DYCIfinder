@@ -40,9 +40,9 @@ CREATE TABLE found_reports (
 
     finder_name VARCHAR(64),
 
-    report_status VARCHAR(16) DEFAULT 'Pending', -- Pending -> Unclaimed -> Claimed
+    report_status VARCHAR(16) DEFAULT 'Pending', -- Pending -> Unclaimed -> Owned -> Claimed
     claimant_post_type VARCHAR(8), -- claimant/owner's post type (claim post or lost report)
-    claimant_post_id INT, -- claimant/owner's post id
+    claimant_post_id INT,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -66,7 +66,7 @@ CREATE TABLE lost_reports (
     contact_number VARCHAR(16),
     email_address VARCHAR(32),
 
-    report_status VARCHAR(16)  DEFAULT 'Unresolved', -- Unresolved -> Resolved / Expired
+    report_status VARCHAR(16) DEFAULT 'Lost', -- Lost -> Linked / Found -> Found / Claimed / Expired
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -84,8 +84,8 @@ CREATE TABLE item_claims (
     facebook_profile VARCHAR(255),
     contact_number VARCHAR(16),
     email_address VARCHAR(32),
-
-    claim_status VARCHAR(16),
+ 
+    claim_status VARCHAR(16), -- 
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
