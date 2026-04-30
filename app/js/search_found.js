@@ -27,7 +27,6 @@ async function loadFoundPosts() {
     const keyword = document.getElementById("keyword-input").value.trim();
     const category = document.getElementById("category-selection").value;
     const location = document.getElementById("location-selection").value;
-    const resultsCount = document.getElementById("results-count");
     const order = document.getElementById("sort-options").value;
 
     let response;
@@ -72,7 +71,6 @@ async function loadFoundPosts() {
         foundPostsContainer.appendChild(clone);
     }
 
-    resultsCount.textContent = data.length;
     runningLoadFoundPosts = false;
 }
 
