@@ -36,8 +36,8 @@ async function loadUserInfo() {
             document.getElementById("email").value = response.data.user.email_address;
             document.getElementById("full-name").value = response.data.user.full_name;
             document.getElementById("student-id").value = response.data.user.student_id;
-            document.getElementById("contact-no").value = response.data.user.contact_number;
-            document.getElementById("fb-profile").value = response.data.user.facebook_profile;
+            document.getElementById("contact-no").value = response.data.user.phone_number;
+            document.getElementById("fb-profile").value = response.data.user.facebook_url;
             document.getElementById("account-createdat").innerText = response.data.user.created_at;
         }
     }

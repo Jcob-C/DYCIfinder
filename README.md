@@ -10,8 +10,8 @@
 ## DATABASE
 
 ```sql
-CREATE DATABASE dycifinder;
-USE dycifinder;
+CREATE DATABASE dyci_finder;
+USE dyci_finder;
 
 CREATE TABLE campus_locations (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -27,89 +27,99 @@ CREATE TABLE item_categories (
 
 CREATE TABLE found_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT, -- reporter's id, null if not a registered user
-
+    report_status VARCHAR(16) DEFAULT 'Pending', -- Pending -> Unclaimed -> Owned -> Claimed
+    ownerpost_type VARCHAR(16), -- Claim or Lost Report
+    ownerpost_id INT,
+    
     item_name VARCHAR(16),
     item_category VARCHAR(32),
-    item_description TEXT,
-
+    item_desc TEXT,
     find_location VARCHAR(32),
     find_date DATE,
-    
     image_url VARCHAR(512),
 
-    finder_name VARCHAR(64),
+    user_id INT, -- null if logged out or unregistered
 
-    report_status VARCHAR(16) DEFAULT 'Pending', -- Pending -> Unclaimed -> Owned -> Claimed
-    claimant_post_type VARCHAR(8), -- claimant/owner's post type (claim post or lost report)
-    claimant_post_id INT,
+    finder_full_name VARCHAR(64),
+    finder_student_id VARCHAR(16),
+    finder_student_course VARCHAR(32),
+    finder_student_section VARCHAR(32),
+
+    finder_fb VARCHAR(255),
+    finder_phone VARCHAR(16),
+    finder_email VARCHAR(32),
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE lost_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT, -- reporter's id, null if not a registered user
-
+    report_status VARCHAR(16) DEFAULT 'Lost', -- Lost -> Found -> Resolved / Expired
+    foundreport_id INT, -- for linking to a found report
+    
     item_name VARCHAR(16),
     item_category VARCHAR(32),
-    item_description TEXT,
-
+    item_desc TEXT,
     lost_location VARCHAR(32),
     lost_date DATE,
-    
     image_url1 VARCHAR(512),
     image_url2 VARCHAR(512),
 
-    loster_name VARCHAR(64),
-    facebook_profile VARCHAR(255),
-    contact_number VARCHAR(16),
-    email_address VARCHAR(32),
+    user_id INT, -- null if logged out or unregistered
 
-    report_status VARCHAR(16) DEFAULT 'Lost', -- Lost -> Linked / Found -> Found / Claimed / Expired
+    owner_full_name VARCHAR(64),
+    owner_student_id VARCHAR(16),
+    owner_student_course VARCHAR(32),
+    owner_student_section VARCHAR(32),
 
+    owner_fb VARCHAR(255),
+    owner_phone VARCHAR(16),
+    owner_email VARCHAR(32),
+    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE item_claims (
+CREATE TABLE foundreport_claims (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,  -- claimant's id, null if not a registered user
-    found_item_id INT NOT NULL,
-
-    claim_description TEXT,
+    foundreport_id INT NOT NULL,
+    claim_status VARCHAR(16) DEFAULT 'Pending', -- Pending -> Selected -> Claimed
+    
+    claim_desc TEXT,
     image_url1 VARCHAR(512),
     image_url2 VARCHAR(512),
 
-    claimant_name VARCHAR(64),
-    facebook_profile VARCHAR(255),
-    contact_number VARCHAR(16),
-    email_address VARCHAR(32),
- 
-    claim_status VARCHAR(16), -- 
+    user_id INT, -- null if logged out or unregistered
+
+    owner_full_name VARCHAR(64),
+    owner_student_id VARCHAR(16),
+    owner_student_course VARCHAR(32),
+    owner_student_section VARCHAR(32),
+
+    owner_fb VARCHAR(255),
+    owner_phone VARCHAR(16),
+    owner_email VARCHAR(32),
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (found_item_id) REFERENCES found_reports(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+    FOREIGN KEY (foundreport_id) REFERENCES found_reports(id)
 );
 
 CREATE TABLE users(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    
+    user_role VARCHAR(8) DEFAULT 'Normal',
+
     email_address VARCHAR(32) UNIQUE NOT NULL,
     hashed_pass VARCHAR(512),
 
     full_name VARCHAR(255),
     student_id VARCHAR(16),
-    facebook_profile VARCHAR(255),
-    contact_number VARCHAR(16),
+    student_course VARCHAR(32),
+    student_section VARCHAR(32),
 
-    user_role VARCHAR(8) DEFAULT 'Normal',
+    facebook_url VARCHAR(255),
+    phone_number VARCHAR(16),
 
     register_code INT,
-    regis_code_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
+    register_code_created_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```

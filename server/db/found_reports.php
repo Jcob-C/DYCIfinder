@@ -2,7 +2,7 @@
 
 function get_public_foundreports($conn, $page, $keyword, $category, $location, $order) { // returns [] or [['id' => int, 'item_name' => string, ...], ...]
     $pageLimit = 9;
-    $sql = "SELECT id, item_name, item_category, find_location, find_date FROM found_reports WHERE report_status = 'Unclaimed'";
+    $sql = "SELECT id, item_name, item_category, find_location, find_date FROM found_reports WHERE report_status != 'Pending'";
     $params = [];
     $types = "";
 
@@ -64,7 +64,7 @@ function insert_foundreport( // returns int (inserted row ID) or 0 if insert fai
     $image_url
 ) {
     $sql = "INSERT INTO found_reports 
-        (user_id, item_name, item_category, item_description, find_location, find_date, image_url, finder_name) 
+        (user_id, item_name, item_category, item_desc, find_location, find_date, image_url, finder_full_name) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ";
 
@@ -91,7 +91,7 @@ function insert_foundreport( // returns int (inserted row ID) or 0 if insert fai
 
 
 function get_public_foundreport($conn, $id) { // returns null or ['item_name' => string, 'item_category' => string, ...]
-    $stmt = $conn->prepare("SELECT item_name, item_category, find_location, find_date FROM found_reports WHERE id = ? AND report_status = 'Unclaimed' LIMIT 1");
+    $stmt = $conn->prepare("SELECT item_name, item_category, find_location, find_date FROM found_reports WHERE id = ? AND report_status != 'Pending' LIMIT 1");
     $stmt->bind_param("i", $id);
 
     $stmt->execute();

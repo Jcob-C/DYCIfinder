@@ -16,7 +16,7 @@ function insert_lostreport( // returns int (inserted row ID) or 0 if insert fail
     $email_address
 ) {
     $sql = "INSERT INTO lost_reports 
-        (user_id, item_name, item_category, item_description, lost_location, lost_date, image_url1, image_url2, loster_name, facebook_profile, contact_number, email_address) 
+        (user_id, item_name, item_category, item_desc, lost_location, lost_date, image_url1, image_url2, owner_full_name, owner_fb, owner_phone, owner_email) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);

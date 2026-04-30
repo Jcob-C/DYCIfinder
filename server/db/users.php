@@ -19,11 +19,11 @@ function get_user_hashedpass($conn, $email) { // return string or null
 
 function store_user_code($conn, $email, $code) { // return success, true or false
     $stmt = $conn->prepare("
-        INSERT INTO users (email_address, register_code, regis_code_created_at)
+        INSERT INTO users (email_address, register_code, register_code_created_at)
         VALUES (?, ?, NOW())
         ON DUPLICATE KEY UPDATE
             register_code = VALUES(register_code),
-            regis_code_created_at = NOW()
+            register_code_created_at = NOW()
     ");
 
     $stmt->bind_param("si", $email, $code);
@@ -99,7 +99,7 @@ function get_user_by_email($conn, $email) { // return null or ['id' => int, 'use
 
 function update_user_profile($conn, $id, $fullname, $studentid, $fbprofile, $contactno) { // return success, true or false
     $stmt = $conn->prepare("
-        UPDATE users SET full_name = ?, student_id = ?, facebook_profile = ?, contact_number = ? WHERE id = ?
+        UPDATE users SET full_name = ?, student_id = ?, facebook_url = ?, phone_number = ? WHERE id = ?
     ");
 
     $stmt->bind_param("ssssi", $fullname, $studentid, $fbprofile, $contactno, $id);
