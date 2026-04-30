@@ -24,8 +24,12 @@ async function submitLoginForm() {
     let invalidMessage = null;
     if (!email) 
         invalidMessage = "Email is required.";
+    else if (!email.includes("@") || !email.includes(".") || email.length < 10) 
+        invalidMessage = "Please enter a valid email address.";
     else if (!password) 
         invalidMessage = "Password is required.";
+    else if (password.length < 8) 
+        invalidMessage = "Password must be at least 8 characters.";
 
     if (invalidMessage) {
         await popupMessage(invalidMessage);
@@ -92,6 +96,8 @@ async function submitRegisterForm() {
     let invalidMessage = null;
     if (!email) 
         invalidMessage = "Email is required.";
+    else if (!email.includes("@") || !email.includes(".") || email.length < 10) 
+        invalidMessage = "Please enter a valid email address.";
     else if (!password) 
         invalidMessage = "Password is required.";
     else if (password.length < 8) 
