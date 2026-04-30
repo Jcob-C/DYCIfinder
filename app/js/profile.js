@@ -30,7 +30,7 @@ async function loadUserInfo() {
         console.log(response);
 
         if (!response.success) throw new Error();
-        else if (response.data.id != 0) {
+        else if (response.data.user) {
             document.getElementById("loggedin-page").style.display = "block";
             document.getElementById("loggedout-page").style.display = "none";
             document.getElementById("email").value = response.data.user.email_address;
