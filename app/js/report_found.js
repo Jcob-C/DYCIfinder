@@ -1,7 +1,7 @@
 import { clearImage, previewImage } from '../lib/img_preview.js';
 import { getResizedImage } from '../lib/img_resizer.js';
 import { popupLoading, popupMessage } from '../lib/popups.js';
-import { loadSelection } from '../lib/util.js';
+import { loadSelection, getUserInfo } from '../lib/util.js';
 import { API_URL } from '../conf/api.js';
 
 let runningPostFoundReport = false;
@@ -19,22 +19,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function loadUserInfo() {
-    try {
-        const result = await fetch(API_URL + "/get_user_info.php", {method: "POST"});
-        const response = await result.json();
-        console.log(response);
-
-        document.getElementById("student-id").value = response.data.user.student_id ?? "";
-        document.getElementById("full-name").value = response.data.user.full_name ?? "";
-        document.getElementById("email-address").value = response.data.user.email_address ?? "";
-        document.getElementById("phone-number").value = response.data.user.phone_number ?? "";
-        document.getElementById("fbprofile-url").value = response.data.user.facebook_url ?? "";
-        document.getElementById("course-section").value = response.data.user.course_section ?? "";
-    }
-    catch (error) {
-        console.error(error);
-        console.log("Failed to preload user info for the found report.");
-    }
+    const data = await getUserInfo();
+    if (!data) return;
+    document.getElementById("student-id").value = data.user.student_id ?? "";
+    document.getElementById("full-name").value = data.user.full_name ?? "";
+    document.getElementById("email-address").value = data.user.email_address ?? "";
+    document.getElementById("phone-number").value = data.user.phone_number ?? "";
+    document.getElementById("fbprofile-url").value = data.user.facebook_url ?? "";
+    document.getElementById("course-section").value = data.user.course_section ?? "";
 }
 
 

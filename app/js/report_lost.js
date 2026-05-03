@@ -1,7 +1,7 @@
 import { clearImage, previewImage } from '../lib/img_preview.js';
 import { getResizedImage } from '../lib/img_resizer.js';
 import { popupMessage, popupLoading } from '../lib/popups.js';
-import { loadSelection } from '../lib/util.js';
+import { loadSelection, getUserInfo } from '../lib/util.js';
 import { API_URL } from '../conf/api.js';
 
 let runningPostLostItemReport = false;
@@ -13,7 +13,21 @@ document.addEventListener("DOMContentLoaded", function () {
     
     loadSelection("lostpost-lostlocation", "get_campuslocations.php", "location_name");
     loadSelection("lostpost-itemcategory", "get_itemcategories.php", "category_name");
+    loadUserInfo();
 });
+
+
+
+async function loadUserInfo() {
+    const data = await getUserInfo();
+    if (!data) return;
+    document.getElementById("student-id").value = data.user.student_id ?? "";
+    document.getElementById("full-name").value = data.user.full_name ?? "";
+    document.getElementById("email-address").value = data.user.email_address ?? "";
+    document.getElementById("phone-number").value = data.user.phone_number ?? "";
+    document.getElementById("fbprofile-url").value = data.user.facebook_url ?? "";
+    document.getElementById("course-section").value = data.user.course_section ?? "";
+}
 
 
 
