@@ -1,5 +1,6 @@
 import { popupMessage } from "../lib/popups.js";
 import { API_URL } from "../conf/api.js";
+import { getUserInfo } from "../lib/util.js";
 
 let runningUpdateUser = false;
 let runningChangePassword = false;
@@ -23,29 +24,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function loadUserInfo() {
-    let response;
-    try {
-        const result = await fetch(API_URL + "/get_user_info.php", {method: "POST"});
-        response = await result.json();
-        console.log(response);
-
-        if (!response.success) throw new Error();
-        else if (response.data.user) {
-            document.getElementById("loggedin-page").style.display = "block";
-            document.getElementById("loggedout-page").style.display = "none";
-            document.getElementById("email").value = response.data.user.email_address;
-            document.getElementById("full-name").value = response.data.user.full_name;
-            document.getElementById("student-id").value = response.data.user.student_id;
-            document.getElementById("course-section").value = response.data.user.course_section;
-            document.getElementById("contact-no").value = response.data.user.phone_number;
-            document.getElementById("fb-profile").value = response.data.user.facebook_url;
-            document.getElementById("account-createdat").innerText = response.data.user.created_at;
-        }
-    }
-    catch (error) {
-        console.error(error);
-        popupMessage("Error fetching user info.<br>Please try again.");
-    }
+    const data = await getUserInfo();
+    if (!data) return;
+    document.getElementById("email").value = data.user.email_address;
+    document.getElementById("full-name").value = data.user.full_name;
+    document.getElementById("student-id").value = data.user.student_id;
+    document.getElementById("course-section").value = data.user.course_section;
+    document.getElementById("contact-no").value = data.user.phone_number;
+    document.getElementById("fb-profile").value = data.user.facebook_url;
+    document.getElementById("account-createdat").innerText = data.user.created_at;
+    document.getElementById("loggedin-page").style.display = "block";
+    document.getElementById("loggedout-page").style.display = "none";
 }
 
 

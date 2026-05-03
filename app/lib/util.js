@@ -28,3 +28,23 @@ export async function loadSelection(selectionID, apiLink, columnName) {
     }
 }
 
+
+
+export async function getUserInfo() {
+    let response;
+    try {
+        const result = await fetch(API_URL + "/get_user_info.php", {method: "POST"});
+        response = await result.json();
+        console.log(response);
+
+        if (!response.success) throw new Error();
+        else if (response.data.user) {
+            return response.data;
+        }
+    }
+    catch (error) {
+        console.error(error);
+        popupMessage("Error fetching user info.<br>Please try again.");
+        return null;
+    }
+}
