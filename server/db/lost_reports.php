@@ -44,3 +44,27 @@ function insert_lostreport( // returns int (inserted row ID) or 0 if insert fail
     $stmt->close();
     return $insertId;
 }
+
+
+
+function get_user_lostreports($conn, $page, $userID) {
+    $pageLimit = 9;
+
+    $sql = "SELECT * FROM lost_reports 
+            WHERE user_id = ?
+            ORDER BY id DESC
+            LIMIT ? OFFSET ?";
+
+    $page = max(1, (int)$page);
+    $offset = ($page - 1) * $pageLimit;
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iii", $userID, $pageLimit, $offset);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    $stmt->close();
+    return $data;
+}
