@@ -8,10 +8,8 @@ let runningClaimPost = false;
 
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("claim-btn").addEventListener("click", claimPost);
-    document.getElementById("claimpost-image1").addEventListener("change", function () { previewImage(this, "preview-image1", "remove-image1"); });
-    document.getElementById("claimpost-image2").addEventListener("change", function () { previewImage(this, "preview-image2", "remove-image2"); });
-    document.getElementById("remove-image1").addEventListener("click", function () { clearImage("claimpost-image1", "preview-image1", "remove-image1"); });
-    document.getElementById("remove-image2").addEventListener("click", function () { clearImage("claimpost-image2", "preview-image2", "remove-image2"); });
+    document.getElementById("claimpost-image").addEventListener("change", function () { previewImage(this, "preview-image", "remove-image"); });
+    document.getElementById("remove-image").addEventListener("click", function () { clearImage("claimpost-image", "preview-image", "remove-image"); });
     
     loadItemInfo();
 });
@@ -54,18 +52,23 @@ async function claimPost() {
     const claimpostDescription = document.getElementById("claimpost-description").value.trim();
     const claimpostOwnerphone = document.getElementById("claim-contactno").value.trim();
     const claimpostOwnername = document.getElementById("claim-ownername").value.trim();
+    const claimpostStudentid = document.getElementById("claim-studentid").value.trim();
+    const claimpostCoursesection = document.getElementById("claim-coursesection").value.trim();
     const claimpostOwnerfb = document.getElementById("claim-fbprofile").value.trim();
     const claimpostOwneremail = document.getElementById("claim-email").value.trim();
-    const claimpostImage1 = document.getElementById("claimpost-image1").files[0];
-    const claimpostImage2 = document.getElementById("claimpost-image2").files[0];
+    const claimpostImage = document.getElementById("claimpost-image").files[0];
 
     let invalidMessage = null;
     if (!claimpostDescription) 
         invalidMessage = "Item Description is required."; 
-    else if (!claimpostImage1 || !claimpostImage2) 
-        invalidMessage = "Item Photos are required."; 
+    else if (!claimpostImage) 
+        invalidMessage = "Item Photo is required."; 
     else if (!claimpostOwnername) 
         invalidMessage = "Name is required."; 
+    else if (!claimpostStudentid) 
+        invalidMessage = "Student ID is required."; 
+    else if (!claimpostCoursesection) 
+        invalidMessage = "Course/Section is required."; 
     else if (!claimpostOwnerfb) 
         invalidMessage = "Facebook Profile is required."; 
     else if (!claimpostOwnerphone) 
@@ -83,15 +86,15 @@ async function claimPost() {
         popupLoading();
 
         const formData = new FormData();
-        const resized1 = await getResizedImage(claimpostImage1);
-        const resized2 = await getResizedImage(claimpostImage2);
+        const resized = await getResizedImage(claimpostImage);
         formData.append("claimpost_description", claimpostDescription);
         formData.append("claimpost_ownerphone", claimpostOwnerphone);
         formData.append("claimpost_owneremail", claimpostOwneremail);
         formData.append("claimpost_ownername", claimpostOwnername);
+        formData.append("claimpost_studentid", claimpostStudentid);
+        formData.append("claimpost_coursesection", claimpostCoursesection);
         formData.append("claimpost_ownerfb", claimpostOwnerfb);
-        formData.append("claimpost_image1", resized1);
-        formData.append("claimpost_image2", resized2);
+        formData.append("claimpost_image", resized);
         formData.append("item_id", itemID);
 
         const result = await fetch(API_URL + "/post_claim/post_itemclaim.php", {
@@ -103,7 +106,7 @@ async function claimPost() {
 
         if (response.success) {
             await popupMessage("claim post submitted successfully.");
-            window.location.href = "search_found.html";
+            window.location.href = response.redirect;
         }
         else throw new Error();
     } 

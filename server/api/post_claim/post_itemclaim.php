@@ -14,24 +14,19 @@ try {
     $facebookProfile = $_POST['claimpost_ownerfb'];
     $emailAddress = $_POST['claimpost_owneremail'];
     $ownerName = $_POST['claimpost_ownername'];
+    $studentID = $_POST['claimpost_studentid'];
+    $courseSection = $_POST['claimpost_coursesection'];
     $userID = $_SESSION['userID'] ?? null;
     $itemID = $_POST['item_id'];
-    $imageURL1 = null;
-    $imageURL2 = null;
+    $imageURL = null;
 
-    // Convert image uploads to URLs with free image hosting
+    // Convert image upload to URL with free image hosting
     $tmpDir = sys_get_temp_dir();                                                                       // Get the system temporary directory
-    if (isset($_FILES['claimpost_image1']) && $_FILES['claimpost_image1']['error'] === UPLOAD_ERR_OK) { // Check if image is uploaded without errors
-        $tmp1 = $tmpDir . "/" . uniqid("img1_") . "_" . $_FILES['claimpost_image1']['name'];            // Create a unique temporary file path
-        move_uploaded_file($_FILES['claimpost_image1']['tmp_name'], $tmp1);                             // Move the uploaded file to the temporary location
-        $imageURL1 = get_imageURL($tmp1);                                                               // Upload the image and get its URL
-        unlink($tmp1);                                                                                  // Delete the temporary file path
-    }                                    
-    if (isset($_FILES['claimpost_image2']) && $_FILES['claimpost_image2']['error'] === UPLOAD_ERR_OK) {
-        $tmp2 = $tmpDir . "/" . uniqid("img1_") . "_" . $_FILES['claimpost_image2']['name'];
-        move_uploaded_file($_FILES['claimpost_image2']['tmp_name'], $tmp2);
-        $imageURL2 = get_imageURL($tmp2);  
-        unlink($tmp2);                                                                    
+    if (isset($_FILES['claimpost_image']) && $_FILES['claimpost_image']['error'] === UPLOAD_ERR_OK) { // Check if image is uploaded without errors
+        $tmp = $tmpDir . "/" . uniqid("img_") . "_" . $_FILES['claimpost_image']['name'];            // Create a unique temporary file path
+        move_uploaded_file($_FILES['claimpost_image']['tmp_name'], $tmp);                             // Move the uploaded file to the temporary location
+        $imageURL = get_imageURL($tmp);                                                               // Upload the image and get its URL
+        unlink($tmp);                                                                                  // Delete the temporary file path
     }
 
     $insertedID = insert_claim(
@@ -39,18 +34,21 @@ try {
         $userID,
         $itemID,
         $description,
-        $imageURL1,
-        $imageURL2,
+        $imageURL,
         $ownerName,
+        $studentID,
+        $courseSection,
         $facebookProfile,
         $contactNumber,
         $emailAddress
     );
 
+    $redirect = isset($_SESSION['userID']) ? "history.html" : "search_found.html";
+
     if ($insertedID > 0) {
         echo json_encode([
             "success" => true,
-            "redirect" => "track.html?tab=claims",
+            "redirect" => $redirect,
             "data" => ["item_claim_id" => $insertedID]
         ]);
         exit();

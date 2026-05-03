@@ -17,16 +17,94 @@
         <hr>
     </header>
 
-    <div id="lost-reports-tab">
-        
-    </div>
-    
-    <div id="claim-posts-tab">
-        
+    <div id="loggedout-page">
+        <h3>Please <a href="account.html">log in</a> to view your report history</h3>
     </div>
 
-    <div id="found-reports-tab">
+    <div id="loggedin-page" style="display: none;">
+        <button id="losts-tab-btn">Losts</button>
+        <button id="claims-tab-btn">Claims</button>
 
+        <div id="lost-reports-tab">
+            <h2>Lost Reports</h2>
+            <div id="lost-reports-container">
+
+            </div>
+        </div>
+
+        <div id="claim-posts-tab" style="display: none;">
+            <h2>Claim Posts</h2>
+            <div id="claim-posts-container">
+
+            </div>
+        </div>
+
+        <br>
+        <div id="pagenav-container">
+            <button id="prev-pagebtn">Prev</button>
+            <span>Page <span id="current-page">1</span></span>
+            <button id="next-pagebtn">Next</button>
+        </div>
     </div>
+
+    <template id="post-template">
+        <div class="post-card">
+            <p>Item: <span class="item-name"></span></p>
+            <p>Status: <span class="post-status"></span></p>
+            <p>Posted on: <span class="post-date"></span></p>
+            <button class="view-details">View Details</button>
+        </div>
+    </template>
+
+    <template id="viewdetails-lost-template">
+        <div class="details-card">
+            <hr>
+            <p>Created At: <span class="created-at"></span></p>
+            <p>Status: <span class="report-status"></span></p>
+
+            <p>Item: <span class="item-name"></span></p>
+            <p>Category: <span class="item-category"></span></p>
+            <p>Description: <span class="item-desc"></span></p>
+            <p>Lost Location: <span class="lost-location"></span></p>
+            <p>Lost Date: <span class="lost-date"></span></p>
+            <p>Image: <img class="item-image"/></p>
+
+            <p>Owner Name: <span class="owner-name"></span></p>
+            <p>Student ID: <span class="owner-student-id"></span></p>
+            <p>Course/Section: <span class="owner-course"></span></p>
+            <p>Facebook: <span class="owner-fb"></span></p>
+            <p>Phone: <span class="owner-phone"></span></p>
+            <p>Email: <span class="owner-email"></span></p>
+
+            <button class="details-done">Done</button>
+            <hr>
+        </div>
+    </template>
+
+    <template id="viewdetails-claims-template">
+        <div class="details-card">
+            <hr>
+            <p>Created At: <span class="created-at"></span></p>
+            <p>Status: <span class="claim-status"></span></p>
+
+            <p>Found Item: <span class="item-name"></span></p>
+            <p>Claim Description: <span class="claim-desc"></span></p>
+            <button class="view-post-btn">View Item Details</button>
+            <p>Image: <img class="image-url"/></p>
+
+            <p>Claimant Name: <span class="owner-name"></span></p>
+            <p>Student ID: <span class="owner-student-id"></span></p>
+            <p>Course/Section: <span class="owner-course"></span></p>
+            <p>Facebook: <span class="owner-fb"></span></p>
+            <p>Phone: <span class="owner-phone"></span></p>
+            <p>Email: <span class="owner-email"></span></p>
+
+            <button class="details-done">Done</button>
+            <hr>
+        </div>
+    </template>
+
+
+    <script type="module" src="./js/history.js"></script>
 </body>
 </html>

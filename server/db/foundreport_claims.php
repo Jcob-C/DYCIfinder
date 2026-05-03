@@ -4,18 +4,19 @@ function insert_claim($conn, // returns int (inserted row ID) or 0 if insert fai
     $user_id, 
     $item_id, 
     $claim_description,
-    $image_url1,
-    $image_url2,
+    $image_url,
     $claimant_name,
+    $student_id,
+    $course_section,
     $facebook_profile,
     $contact_number,
     $email_address
 ) {
     $sql = "INSERT INTO foundreport_claims
-    (user_id, foundreport_id, claim_desc, image_url1, image_url2, owner_full_name, owner_fb, owner_fb, owner_email) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    (user_id, foundreport_id, claim_desc, image_url, owner_full_name, owner_student_id, owner_course_section, owner_fb, owner_phone, owner_email) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisssssss", $user_id, $item_id, $claim_description, $image_url1, $image_url2, $claimant_name, $facebook_profile, $contact_number, $email_address);
+    $stmt->bind_param("iissssssss", $user_id, $item_id, $claim_description, $image_url, $claimant_name, $student_id, $course_section, $facebook_profile, $contact_number, $email_address);
     $stmt->execute();
     $stmt->close();
     return $conn->insert_id; 
@@ -24,7 +25,7 @@ function insert_claim($conn, // returns int (inserted row ID) or 0 if insert fai
 
 
 function get_user_foundreport_claims($conn, $page, $userID) {
-    $pageLimit = 9;
+    $pageLimit = 5;
 
     $sql = "SELECT frc.*, fr.item_name 
             FROM foundreport_claims frc

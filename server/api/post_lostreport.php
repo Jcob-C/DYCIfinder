@@ -49,10 +49,12 @@ try {
         $studentID
     );
 
+    $redirect = isset($_SESSION['userID']) ? "history.html" : "search_found.html";
+
     if ($insertedID > 0) {
         echo json_encode([
             "success" => true,
-            "redirect" => "track.html?tab=losses",
+            "redirect" => $redirect,
             "data" => ["lost_report_id" => $insertedID]
         ]);
         exit();

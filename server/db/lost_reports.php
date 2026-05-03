@@ -48,7 +48,7 @@ function insert_lostreport( // returns int (inserted row ID) or 0 if insert fail
 
 
 function get_user_lostreports($conn, $page, $userID) {
-    $pageLimit = 9;
+    $pageLimit = 5;
 
     $sql = "SELECT * FROM lost_reports 
             WHERE user_id = ?

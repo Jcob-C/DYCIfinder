@@ -82,8 +82,7 @@ CREATE TABLE foundreport_claims (
     claim_status VARCHAR(16) DEFAULT 'Pending', -- Pending -> Selected -> Claimed
     
     claim_desc TEXT,
-    image_url1 VARCHAR(512),
-    image_url2 VARCHAR(512),
+    image_url VARCHAR(512),
 
     user_id INT, -- null if logged out or unregistered
 
