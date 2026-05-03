@@ -1,5 +1,6 @@
 <?php
 header("Content-Type: application/json");
+session_start();
 
 require_once __DIR__ . '/../../conf/db.php';
 require_once __DIR__ . '/../../db/lost_reports.php';
@@ -10,7 +11,7 @@ try {
 
     if (!isset($_SESSION['userID'])) throw new Exception("'userID' is not set in session");
 
-    $output = get_user_lostreports($conn, $inputs['currentPage'], $_SESSION['user_id']);
+    $output = get_user_lostreports($conn, $inputs['currentPage'], $_SESSION['userID']);
 
     echo json_encode([
         "success" => true,
