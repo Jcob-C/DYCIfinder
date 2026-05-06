@@ -3,107 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/popups.css">
     <title>DYCIfinder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/popups.css">
+    <link rel="stylesheet" href="./assets/style.css">
+    <style id="page-styles">
+
+        /* ── TAB TOGGLE SWITCH ── */
+        .tab-switch {
+            display: inline-flex;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 4px;
+            gap: 0;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .tab-btn {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            border-radius: 7px;
+            padding: 8px 28px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+        .tab-btn:hover:not(.active) {
+            color: var(--blue-mid);
+        }
+        .tab-btn.active {
+            color: #fff;
+        }
+
+        /* sliding pill */
+        .tab-switch::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: linear-gradient(90deg, var(--blue-start), var(--blue-mid));
+            border-radius: 7px;
+            box-shadow: 0 2px 8px rgba(26,106,255,0.25);
+            transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+            z-index: 0;
+        }
+        /* shift pill to the right when claims is active */
+        .tab-switch.on-claims::before {
+            transform: translateX(calc(100% + 0px));
+        }
+
+        /* ── POSTS GRID ── */
+        #lost-reports-container,
+        #claim-posts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 20px 18px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: box-shadow 0.18s, transform 0.15s;
+            position: relative;
+            overflow: hidden;
+        }
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue-start), var(--accent));
+            opacity: 0;
+            transition: opacity 0.18s;
+        }
+        .post-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .post-card:hover::before { opacity: 1; }
+
+        .post-card .item-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 4px;
+            letter-spacing: -0.01em;
+        }
+
+        .post-card p {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.5;
+        }
+        .post-card p span { color: var(--text-primary); font-weight: 500; }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-block;
+            font-size: 0.73rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-top: 2px;
+            width: fit-content;
+        }
+        .status-badge.pending  { background: #fef9c3; color: #92400e; border: 1px solid #fde68a; }
+        .status-badge.resolved { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .status-badge.rejected { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .status-badge.default  { background: #eef2ff; color: var(--blue-mid); border: 1px solid #c7d5ff; }
+
+        /* View details button */
+        .view-details-btn {
+            margin-top: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--blue-mid);
+            background: #eef2ff;
+            border: 1px solid #c7d5ff;
+            border-radius: 7px;
+            padding: 8px 0;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .view-details-btn:hover {
+            background: linear-gradient(90deg, var(--blue-start), var(--blue-mid));
+            color: #fff;
+            border-color: transparent;
+        }
+
+        /* ── LOGGED-OUT STATE ── */
+        #loggedout-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 40vh;
+            text-align: center;
+        }
+        #loggedout-page h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        #loggedout-page a {
+            color: var(--blue-start);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        #loggedout-page a:hover { text-decoration: underline; }
+
+        /* ── PAGINATION ── */
+        #pagenav-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        #pagenav-container > span { font-size: 0.85rem; color: var(--text-muted); }
+        #current-page { font-weight: 700; color: var(--text-primary); }
+
+        /* ══════════════════════════════════════
+           POPUP OVERLAY
+        ══════════════════════════════════════ */
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 8, 15, 0.55);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: overlayIn 0.18s ease;
+        }
+        @keyframes overlayIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .details-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(10,24,60,0.18);
+            padding: 32px 28px 24px;
+            width: 100%;
+            max-width: 720px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            animation: cardIn 0.2s cubic-bezier(0.22,1,0.36,1);
+        }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(18px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Scrollbar */
+        .details-card::-webkit-scrollbar { width: 5px; }
+        .details-card::-webkit-scrollbar-track { background: transparent; }
+        .details-card::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+        /* Top accent bar */
+        .details-card::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--blue-start), var(--accent));
+            border-radius: 4px 4px 0 0;
+            margin: -32px -28px 24px;
+        }
+
+        .details-card h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 20px;
+            letter-spacing: -0.01em;
+        }
+
+        /* Field rows */
+        .details-card > p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin: 0 0 10px;
+            line-height: 1.55;
+        }
+        .details-card > p span {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Divider */
+        .details-card .section-divider,
+        .details-card > hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 16px 0;
+        }
+
+        /* Images */
+        .details-card .item-image,
+        .details-card .image-url {
+            width: 80%;
+            height: auto;       /* natural height, no cropping */
+            max-height: none;   /* remove the crop limit */
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Action buttons row */
+        .popup-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .details-done {
+            flex: 1;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 0;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .details-done:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+        .view-post-btn {
+            flex: 1;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(90deg, var(--blue-start), var(--blue-mid));
+            border: none;
+            border-radius: 8px;
+            padding: 10px 0;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+        .view-post-btn:hover { opacity: 0.88; }
+    </style>
 </head>
 <body>
+
     <header>
-        <h1><a href="index.html">DYCIfinder</a></h1>
-        <button onclick="window.location.href='search_found.html'">Found Items</button>
-        <button onclick="window.location.href='report_found.html'">Report Found</button>
-        <button onclick="window.location.href='report_lost.html'">Report Lost</button>
-        <button onclick="window.location.href='history.html'">History</button>
-        <button onclick="window.location.href='profile.html'">Profile</button>
-        <hr>
+        <div class="header-top d-flex align-items-center">
+            <a href="index.html" class="brand">DYCI<span>finder</span></a>
+        </div>
+        <nav class="header-nav d-flex align-items-center">
+            <a class="nav-link-item" onclick="window.location.href='search_found.html'">Found Items</a>
+            <a class="nav-link-item" onclick="window.location.href='report_found.html'">Report Found</a>
+            <a class="nav-link-item" onclick="window.location.href='report_lost.html'">Report Lost</a>
+            <a class="nav-link-item active" onclick="window.location.href='history.html'">History</a>
+            <a class="nav-link-item" onclick="window.location.href='profile.html'">Profile</a>
+        </nav>
     </header>
 
-    <div id="loggedout-page">
-        <h3>Please <a href="account.html">log in</a> to view your report history</h3>
-    </div>
+    <main class="container-fluid px-4 px-md-5 mt-4">
 
-    <div id="loggedin-page" style="display: none;">
-        <button id="losts-tab-btn">Losts</button>
-        <button id="claims-tab-btn">Claims</button>
+        <!-- ── LOGGED OUT ── -->
+        <div id="loggedout-page">
+            <div class="mb-3" style="font-size:2.5rem;">🔒</div>
+            <h3>Please <a href="account.html">log in</a> to view your report history</h3>
+        </div>
 
-        <div id="lost-reports-tab">
-            <h2>Lost Reports</h2>
-            <div id="lost-reports-container">
+        <!-- ── LOGGED IN ── -->
+        <div id="loggedin-page" style="display: none;">
 
+            <div class="d-flex align-items-center justify-content-between mb-1">
+                <span class="section-label">My Activity</span>
             </div>
-        </div>
+            <h2 class="page-title mb-4">Report History</h2>
 
-        <div id="claim-posts-tab" style="display: none;">
-            <h2>Claim Posts</h2>
-            <div id="claim-posts-container">
-
+            <!-- Toggle switch -->
+            <div class="mb-4">
+                <div id="tab-switch" class="tab-switch">
+                    <button id="losts-tab-btn"  class="tab-btn active">Lost Reports</button>
+                    <button id="claims-tab-btn" class="tab-btn">Claims</button>
+                </div>
             </div>
+
+            <!-- Lost Reports tab -->
+            <div id="lost-reports-tab">
+                <div id="lost-reports-container"></div>
+            </div>
+
+            <!-- Claims tab -->
+            <div id="claim-posts-tab" style="display: none;">
+                <div id="claim-posts-container"></div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagenav-container" class="mt-4">
+                <button id="prev-pagebtn" class="btn-page">← Prev</button>
+                <span>Page <span id="current-page">1</span></span>
+                <button id="next-pagebtn" class="btn-page">Next →</button>
+            </div>
+
         </div>
 
-        <br>
-        <div id="pagenav-container">
-            <button id="prev-pagebtn">Prev</button>
-            <span>Page <span id="current-page">1</span></span>
-            <button id="next-pagebtn">Next</button>
-        </div>
-    </div>
+    </main>
 
+    <!-- ══════════════════════════════════════
+         TEMPLATES
+    ══════════════════════════════════════ -->
+
+    <!-- Summary card -->
     <template id="post-template">
         <div class="post-card">
-            <p>Item: <span class="item-name"></span></p>
-            <p>Status: <span class="post-status"></span></p>
-            <p>Posted on: <span class="post-date"></span></p>
-            <button class="view-details">View Details</button>
+            <p class="item-label"><span class="item-name">Item Name</span></p>
+            <span class="status-badge default post-status">Status</span>
+            <p style="margin-top:8px;">Posted on: <span class="post-date">—</span></p>
+            <button class="view-details view-details-btn">View Details</button>
         </div>
     </template>
 
+    <!-- Lost item detail popup -->
     <template id="viewdetails-lost-template">
-        <div class="details-card">
-            <hr>
-            <p>Created At: <span class="created-at"></span></p>
-            <p>Status: <span class="report-status"></span></p>
+        <div class="popup-overlay">
+            <div class="details-card">
+                <h3>Lost Item Details</h3>
 
-            <p>Item: <span class="item-name"></span></p>
-            <p>Category: <span class="item-category"></span></p>
-            <p>Description: <span class="item-desc"></span></p>
-            <p>Lost Location: <span class="lost-location"></span></p>
-            <p>Lost Date: <span class="lost-date"></span></p>
-            <p>Image: <img class="item-image"/></p>
+                <p>Created: <span class="created-at">—</span></p>
+                <p>Status: <span class="report-status">—</span></p>
 
-            <p>Owner Name: <span class="owner-name"></span></p>
-            <p>Student ID: <span class="owner-student-id"></span></p>
-            <p>Course/Section: <span class="owner-course"></span></p>
-            <p>Facebook: <span class="owner-fb"></span></p>
-            <p>Phone: <span class="owner-phone"></span></p>
-            <p>Email: <span class="owner-email"></span></p>
+                <hr class="section-divider">
 
-            <button class="details-done">Done</button>
-            <hr>
+                <p>Item: <span class="item-name">—</span></p>
+                <p>Category: <span class="item-category">—</span></p>
+                <p>Description: <span class="item-desc">—</span></p>
+                <p>Lost Location: <span class="lost-location">—</span></p>
+                <p>Lost Date: <span class="lost-date">—</span></p>
+                <p>Image:</p>
+                <img class="item-image" alt="Item image"/>
+
+                <hr class="section-divider">
+
+                <p>Owner: <span class="owner-name">—</span></p>
+                <p>Student ID: <span class="owner-student-id">—</span></p>
+                <p>Course / Section: <span class="owner-course">—</span></p>
+                <p>Facebook: <span class="owner-fb">—</span></p>
+                <p>Phone: <span class="owner-phone">—</span></p>
+                <p>Email: <span class="owner-email">—</span></p>
+
+                <div class="popup-actions">
+                    <button class="details-done">Close</button>
+                </div>
+            </div>
         </div>
     </template>
 
+    <!-- Claim detail popup -->
     <template id="viewdetails-claims-template">
-        <div class="details-card">
-            <hr>
-            <p>Created At: <span class="created-at"></span></p>
-            <p>Status: <span class="claim-status"></span></p>
+        <div class="popup-overlay">
+            <div class="details-card">
+                <h3>Claim Details</h3>
 
-            <p>Found Item: <span class="item-name"></span></p>
-            <p>Claim Description: <span class="claim-desc"></span></p>
-            <button class="view-post-btn">View Item Details</button>
-            <p>Image: <img class="image-url"/></p>
+                <p>Created: <span class="created-at">—</span></p>
+                <p>Status: <span class="claim-status">—</span></p>
 
-            <p>Claimant Name: <span class="owner-name"></span></p>
-            <p>Student ID: <span class="owner-student-id"></span></p>
-            <p>Course/Section: <span class="owner-course"></span></p>
-            <p>Facebook: <span class="owner-fb"></span></p>
-            <p>Phone: <span class="owner-phone"></span></p>
-            <p>Email: <span class="owner-email"></span></p>
+                <hr class="section-divider">
 
-            <button class="details-done">Done</button>
-            <hr>
+                <p>Found Item: <span class="item-name">—</span></p>
+                <p>Claim Description: <span class="claim-desc">—</span></p>
+                <p>Image:</p>
+                <img class="image-url" alt="Proof image"/>
+
+                <hr class="section-divider">
+
+                <p>Claimant: <span class="owner-name">—</span></p>
+                <p>Student ID: <span class="owner-student-id">—</span></p>
+                <p>Course / Section: <span class="owner-course">—</span></p>
+                <p>Facebook: <span class="owner-fb">—</span></p>
+                <p>Phone: <span class="owner-phone">—</span></p>
+                <p>Email: <span class="owner-email">—</span></p>
+
+                <div class="popup-actions">
+                    <button class="view-post-btn">View Item Post</button>
+                    <button class="details-done">Close</button>
+                </div>
+            </div>
         </div>
     </template>
-
 
     <script type="module" src="./js/history.js"></script>
 </body>

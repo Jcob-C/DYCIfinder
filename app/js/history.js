@@ -95,7 +95,7 @@ async function loadLosts() {
             detailsClone.querySelector(".owner-email").textContent = post['owner_email'];
 
             detailsClone.querySelector(".details-done").addEventListener("click", function () {
-                this.closest(".details-card").remove();
+                this.closest(".popup-overlay").remove();
             });
 
             lostsContainer.appendChild(detailsClone);
@@ -171,7 +171,7 @@ async function loadClaims() {
             detailsClone.querySelector(".owner-email").textContent = post['owner_email'];
 
             detailsClone.querySelector(".details-done").addEventListener("click", function () {
-                this.closest(".details-card").remove();
+                this.closest(".popup-overlay").remove();
             });
 
             claimsContainer.appendChild(detailsClone);
@@ -201,14 +201,24 @@ async function changePage(increment) {
 
 function switchTab(tab) {
     if (currentTab == tab) return;
+
+    const sw = document.getElementById("tab-switch");  // add
+    
     if (tab == "losts") {
         document.getElementById("lost-reports-tab").style.display = "block";
         document.getElementById("claim-posts-tab").style.display = "none";
+        sw.classList.remove("on-claims");                               // add
+        document.getElementById("losts-tab-btn").classList.add("active");    // add
+        document.getElementById("claims-tab-btn").classList.remove("active"); // add
     }
     else if (tab == "claims") {
         document.getElementById("claim-posts-tab").style.display = "block";
         document.getElementById("lost-reports-tab").style.display = "none";
+        sw.classList.add("on-claims");                                  // add
+        document.getElementById("claims-tab-btn").classList.add("active");   // add
+        document.getElementById("losts-tab-btn").classList.remove("active"); // add
     }
-    currentTab = tab; 
+
+    currentTab = tab;
     document.getElementById("current-page").textContent = currentTab == "losts" ? lostCurrentPage : claimsCurrentPage;
 }
