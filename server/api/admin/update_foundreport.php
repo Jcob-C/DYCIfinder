@@ -48,7 +48,7 @@ try {
     }
 } 
 catch (Exception $e) {
-    error_log("Error in update_user.php : " . $e->getMessage());
+    error_log("Error in update_foundreport.php : " . $e->getMessage());
 } 
 finally {
     echo json_encode([
