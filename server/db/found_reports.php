@@ -27,10 +27,10 @@ function get_public_foundreports($conn, $page, $keyword, $category, $location, $
     }
     
     if ($order == 'Oldest first') {
-        $sql .= " ORDER BY find_date ASC LIMIT ? OFFSET ?"; 
+        $sql .= " ORDER BY id ASC LIMIT ? OFFSET ?"; 
     }
     else {
-        $sql .= " ORDER BY find_date DESC LIMIT ? OFFSET ?";
+        $sql .= " ORDER BY id DESC LIMIT ? OFFSET ?";
     }
 
     $page = max(1, (int)$page);
@@ -114,6 +114,20 @@ function get_public_foundreport($conn, $id) { // returns null or ['item_name' =>
 
 
 
+function get_foundreport($conn, $id) { // returns null or ['item_name' => string, 'item_category' => string, ...]
+    $stmt = $conn->prepare("SELECT * FROM found_reports WHERE id = ? LIMIT 1");
+    $stmt->bind_param("i", $id);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $report = $result->fetch_assoc();
+
+    $stmt->close();
+    return $report;
+}
+
+
+
 function get_foundreports($conn, $page, $keyword, $category, $location, $order) { // returns [] or [['id' => int, 'item_name' => string, ...], ...]
     $pageLimit = 9;
     $sql = "SELECT id, item_name, item_category, find_location, find_date, image_url FROM found_reports WHERE 1 = 1";
@@ -141,10 +155,10 @@ function get_foundreports($conn, $page, $keyword, $category, $location, $order) 
     }
     
     if ($order == 'Oldest first') {
-        $sql .= " ORDER BY find_date ASC LIMIT ? OFFSET ?"; 
+        $sql .= " ORDER BY id ASC LIMIT ? OFFSET ?"; 
     }
     else {
-        $sql .= " ORDER BY find_date DESC LIMIT ? OFFSET ?";
+        $sql .= " ORDER BY id DESC LIMIT ? OFFSET ?";
     }
 
     $page = max(1, (int)$page);

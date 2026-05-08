@@ -10,16 +10,21 @@ admin_block();
 
 try {
     $conn = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
-    $data = json_decode(file_get_contents("php://input"), true);
-    $output = get_foundreports($conn, $data['currentPage'], $data['keyword'], $data['category'], $data['location'], $data['order']);
+    $inputs = json_decode(file_get_contents("php://input"), true);
+    $output = get_foundreport($conn, $inputs['id']);
 
-    echo json_encode([
-        "success" => true,
-        "data" => $output
-    ]);
+    if ($output) {
+        echo json_encode([
+            "success" => true,
+            "data" => $output
+        ]);
+        exit();
+    }
 }
 catch (Exception $e) {
-    error_log("Error in get_foundreports.php : " . $e->getMessage());
+    error_log("Error in get_foundreport.php : " . $e->getMessage());
+}
+finally {
     echo json_encode([
         "success" => false,
         "data" => []
