@@ -53,7 +53,7 @@ CREATE TABLE found_reports (
 
 CREATE TABLE lost_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    report_status VARCHAR(16) DEFAULT 'Lost', -- Lost -> Found -> Resolved
+    report_status VARCHAR(16) DEFAULT 'Lost', -- Lost -> Found
     foundreport_id INT, -- for linking to a found report
     
     item_name VARCHAR(16),
@@ -79,7 +79,7 @@ CREATE TABLE lost_reports (
 CREATE TABLE foundreport_claims (
     id INT AUTO_INCREMENT PRIMARY KEY,
     foundreport_id INT NOT NULL,
-    claim_status VARCHAR(16) DEFAULT 'Pending', -- Pending -> Rejected / Approved -> Claimed
+    claim_status VARCHAR(16) DEFAULT 'Pending', -- Pending -> Rejected / Aprroved
     
     claim_desc TEXT,
     image_url VARCHAR(512),
