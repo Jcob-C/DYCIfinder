@@ -1,5 +1,6 @@
 import { API_URL } from '../conf/api.js';
 import { popupMessage } from '../lib/popups.js';
+import { loadSelection } from '../lib/util.js';
 
 const foundReportID = new URLSearchParams(window.location.search).get('id');
 
@@ -10,6 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (foundReportID == null || foundReportID == "") window.location.href = "admin.html";
 
     document.getElementById("found-update-btn").addEventListener("click", updateFoundReport);
+    
+    loadSelection("found-location-select", "get_campuslocations.php", "location_name");
+    loadSelection("found-category-select", "get_itemcategories.php", "category_name");
     loadFoundReportInfo();
 });
 
