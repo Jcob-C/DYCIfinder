@@ -1,14 +1,15 @@
-import { popupMessage } from '../lib/popups.js';
+import { popupConfirm, popupMessage } from '../lib/popups.js';
 import { loadSelection } from '../lib/util.js';
 import { API_URL } from '../conf/api.js';
 
 let currentPage = 1;
 let onLastPage = false;
 let runningLoadFoundPosts = false;
+let runningPublishReport = false;
 
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("prev-pagebtn").addEventListener("click", goPrevPage);
-    document.getElementById("next-pagebtn").addEventListener("click", goNextPage)
+    document.getElementById("next-pagebtn").addEventListener("click", goNextPage);
     document.getElementById("apply-filters-btn").addEventListener("click", loadFoundPosts);
 
     loadSelection("location-selection", "get_campuslocations.php", "location_name");
@@ -22,7 +23,7 @@ async function loadFoundPosts() {
     if (runningLoadFoundPosts) return;
     runningLoadFoundPosts = true;
 
-    const foundPostsContainer = document.getElementById("foundposts-container");
+    const foundPostsContainer = document.getElementById("found-reports-container");
     const foundPostTemplate = document.getElementById("foundpost-template");
     const keyword = document.getElementById("keyword-input").value.trim();
     const category = document.getElementById("category-selection").value;
@@ -31,11 +32,11 @@ async function loadFoundPosts() {
 
     let response;
     try {
-        const result = await fetch(API_URL + '/public/get_foundreports.php', {
+        const result = await fetch(API_URL + '/admin/get_foundreports.php', {
             method: "POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({
-                keyword, category, location, order, currentPage, 
+                keyword, category, location, order, currentPage,
             })
         });
         response = await result.json();
@@ -53,21 +54,57 @@ async function loadFoundPosts() {
 
     if (data.length < 9) onLastPage = true;
     else onLastPage = false;
-    
-    Array.from(foundPostsContainer.children).forEach(child => { // delete all children of foundPostsContainer except template elements
+
+    Array.from(foundPostsContainer.children).forEach(child => {
         if (child.tagName !== "TEMPLATE") child.remove();
     });
 
     for (let i = 0; i < data.length; i++) {
         let post = data[i];
         const clone = foundPostTemplate.content.cloneNode(true);
+        clone.querySelector(".item-image").src = post['image_url'];
         clone.querySelector(".foundpost-name").textContent = post['item_name'];
         clone.querySelector(".foundpost-location").textContent = post['find_location'];
         clone.querySelector(".foundpost-date").textContent = post['find_date'];
         clone.querySelector(".foundpost-category").textContent = post['item_category'];
-        clone.querySelector(".claim-foundpost-btn").addEventListener("click", function () {
-            window.location.href = `post_claim.html?item_id=${post['id']}`;
+        
+        clone.querySelector(".update-found-btn").addEventListener("click", function () {
+            window.location.href = `found_report.html?id=${post['id']}`;
         });
+
+        const publishBtn = clone.querySelector(".publish-found-btn")
+
+        if (post['report_status'] != "Pending") {
+            publishBtn.style.display = "none";
+        }
+        else {
+            publishBtn.addEventListener("click", async function () {
+                if (runningPublishReport) return;
+                runningPublishReport = true;
+
+                const confirmed = await popupConfirm("The office has received this item?");
+                if (!confirmed) {
+                    runningPublishReport = false;
+                    return;
+                }
+
+                const result = await fetch(API_URL + '/admin/publish_foundreport.php', {
+                    method: "POST",
+                    headers: {"Content-Type":"application/json"},
+                    body: JSON.stringify({ id: post['id'] })
+                });
+                const response = await result.json();
+                console.log(response);
+
+                if (response.success) {
+                    publishBtn.style.display = "none";
+                    await popupMessage("Successfully published report.");
+                }
+                else await popupMessage("Failed to publish report.");
+
+                runningPublishReport = false;
+            });
+        }
         foundPostsContainer.appendChild(clone);
     }
 
@@ -91,3 +128,4 @@ async function goNextPage() {
     loadFoundPosts();
     document.getElementById("current-page").textContent = currentPage;
 }
+

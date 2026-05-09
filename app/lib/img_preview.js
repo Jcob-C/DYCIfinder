@@ -32,3 +32,21 @@ export function clearImage(inputId, previewId, removeBtnId) {
     removeBtn.style.display = "none";
     document.getElementById("upload-area-container").style.display = "block";
 }
+
+
+
+export function replaceImage(input, previewId, imageSRC) {
+    const preview = document.getElementById(previewId);
+    const reader = new FileReader();
+
+    if (!input.files || !input.files[0]) {
+        preview.src = imageSRC;
+        return;
+    }
+
+    reader.onload = function (e) {
+        preview.src = e.target.result;
+    };
+
+    reader.readAsDataURL(input.files[0]);
+}

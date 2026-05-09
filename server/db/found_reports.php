@@ -2,7 +2,7 @@
 
 function get_public_foundreports($conn, $page, $keyword, $category, $location, $order) { // returns [] or [['id' => int, 'item_name' => string, ...], ...]
     $pageLimit = 9;
-    $sql = "SELECT id, item_name, item_category, find_location, find_date FROM found_reports WHERE report_status != 'Pending'";
+    $sql = "SELECT id, item_name, item_category, find_location, find_date FROM found_reports WHERE report_status = 'Unclaimed'";
     $params = [];
     $types = "";
 
@@ -27,10 +27,10 @@ function get_public_foundreports($conn, $page, $keyword, $category, $location, $
     }
     
     if ($order == 'Oldest first') {
-        $sql .= " ORDER BY find_date ASC LIMIT ? OFFSET ?"; 
+        $sql .= " ORDER BY id ASC LIMIT ? OFFSET ?"; 
     }
     else {
-        $sql .= " ORDER BY find_date DESC LIMIT ? OFFSET ?";
+        $sql .= " ORDER BY id DESC LIMIT ? OFFSET ?";
     }
 
     $page = max(1, (int)$page);
@@ -110,4 +110,153 @@ function get_public_foundreport($conn, $id) { // returns null or ['item_name' =>
 
     $stmt->close();
     return $report;
+}
+
+
+
+function get_foundreport($conn, $id) { // returns null or ['item_name' => string, 'item_category' => string, ...]
+    $stmt = $conn->prepare("SELECT * FROM found_reports WHERE id = ? LIMIT 1");
+    $stmt->bind_param("i", $id);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $report = $result->fetch_assoc();
+
+    $stmt->close();
+    return $report;
+}
+
+
+
+function get_foundreports($conn, $page, $keyword, $category, $location, $order) { // returns [] or [['id' => int, 'item_name' => string, ...], ...]
+    $pageLimit = 9;
+    $sql = "SELECT id, item_name, item_category, find_location, find_date, image_url, report_status FROM found_reports WHERE 1 = 1";
+    $params = [];
+    $types = "";
+
+    if (!empty($keyword)) {
+        $sql .= " AND (item_name LIKE ? OR item_category LIKE ?)";
+        $keywordSQL = "%" . $keyword . "%";
+        $params[] = $keywordSQL;
+        $params[] = $keywordSQL;
+        $types .= "ss";
+    }
+
+    if (!empty($category) && $category !== 'Any') {
+        $sql .= " AND item_category = ?";
+        $params[] = $category;
+        $types .= "s";
+    }
+
+    if (!empty($location) && $location !== 'Anywhere') {
+        $sql .= " AND find_location = ?";
+        $params[] = $location;
+        $types .= "s";
+    }
+    
+    if ($order == 'Oldest first') {
+        $sql .= " ORDER BY id ASC LIMIT ? OFFSET ?"; 
+    }
+    else {
+        $sql .= " ORDER BY id DESC LIMIT ? OFFSET ?";
+    }
+
+    $page = max(1, (int)$page);
+    $offset = ($page - 1) * $pageLimit;
+    $params[] = $pageLimit;
+    $params[] = $offset;
+    $types .= "ii";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    $stmt->close();
+    return $data;
+}
+
+
+
+function update_foundreport(
+    $conn,
+    $item_id,
+    $item_name,
+    $item_category,
+    $item_description,
+    $find_location,
+    $find_date,
+    $finder_name,
+    $studentID,
+    $fbURL,
+    $phone,
+    $email,
+    $coursection
+) {
+    $sql = "UPDATE found_reports 
+        SET item_name = ?,
+            item_category = ?,
+            item_desc = ?,
+            find_location = ?,
+            find_date = ?,
+            finder_full_name = ?,
+            finder_student_id = ?,
+            finder_fb = ?,
+            finder_phone = ?,
+            finder_email = ?,
+            finder_course_section = ?
+        WHERE id = ?
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param(
+        "sssssssssssi",
+        $item_name,
+        $item_category,
+        $item_description,
+        $find_location,
+        $find_date,
+        $finder_name,
+        $studentID,
+        $fbURL,
+        $phone,
+        $email,
+        $coursection,
+        $item_id
+    );
+
+    $executed = $stmt->execute();
+    $stmt->close();
+
+    return $executed;
+}
+
+
+
+function set_report_status($conn, $id, $status) {
+    $sql = "UPDATE found_reports SET report_status = ? WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $status, $id);
+
+    $executed = $stmt->execute();
+    $stmt->close();
+
+    return $executed;
+}
+
+
+
+function set_report_image($conn, $id, $url) {
+    $sql = "UPDATE found_reports SET image_url = ? WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $url, $id);
+
+    $executed = $stmt->execute();
+    $stmt->close();
+
+    return $executed;
 }
