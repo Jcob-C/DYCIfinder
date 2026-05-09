@@ -92,7 +92,7 @@ async function postFoundReport() {
         formData.append("email", email);
         formData.append("coursection", coursection);
         
-        const result = await fetch(API_URL + "/post_foundreport.php", {
+        const result = await fetch(API_URL + "/public/post_foundreport.php", {
             method: "POST",
             body: formData
         });

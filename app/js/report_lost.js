@@ -97,7 +97,7 @@ async function postLostItemReport() {
     try {
         popupLoading();
         
-        const result = await fetch(API_URL + "/post_lostreport.php", {
+        const result = await fetch(API_URL + "/public/post_lostreport.php", {
             method: "POST",
             body: formData
         });

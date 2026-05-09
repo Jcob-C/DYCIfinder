@@ -31,7 +31,7 @@ async function loadFoundPosts() {
 
     let response;
     try {
-        const result = await fetch(API_URL + '/get_foundreports.php', {
+        const result = await fetch(API_URL + '/public/get_foundreports.php', {
             method: "POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({

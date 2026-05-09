@@ -6,7 +6,7 @@ import { popupMessage } from './popups.js';
 export async function loadSelection(selectionID, apiLink, columnName) {
     const categorySelect = document.getElementById(selectionID);
 
-    const result = await fetch(API_URL + '/' + apiLink, {method: "POST"});
+    const result = await fetch(API_URL + '/public/' + apiLink, {method: "POST"});
     const response = await result.json();
     console.log(response);
     
@@ -33,7 +33,7 @@ export async function loadSelection(selectionID, apiLink, columnName) {
 export async function getUserInfo() {
     let response;
     try {
-        const result = await fetch(API_URL + "/get_user_info.php", {method: "POST"});
+        const result = await fetch(API_URL + "/public/get_user_info.php", {method: "POST"});
         response = await result.json();
         console.log(response);
 
