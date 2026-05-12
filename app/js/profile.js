@@ -35,6 +35,8 @@ async function loadUserInfo() {
     document.getElementById("account-createdat").innerText = data.user.created_at;
     document.getElementById("loggedin-page").style.display = "block";
     document.getElementById("loggedout-page").style.display = "none";
+
+    if(data.user.user_role == 'Admin') document.getElementById("admin-btn").style.display = "block";
 }
 
 
