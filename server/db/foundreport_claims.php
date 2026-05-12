@@ -60,3 +60,37 @@ function get_claims($conn, $foundID) { // returns [] or [['id' => int, 'item_nam
     $stmt->close();
     return $data;
 }
+
+
+
+function set_claims_statuses($conn, $foundID, $status) { // returns int (number of rows updated) or 0 if update failed
+    $sql = "UPDATE foundreport_claims SET claim_status = ? WHERE foundreport_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $status, $foundID);
+    $success = $stmt->execute();
+    $stmt->close();
+    return $success;
+}
+
+
+function set_claim_status($conn, $claimID, $status) { // returns int (number of rows updated) or 0 if update failed
+    $sql = "UPDATE foundreport_claims SET claim_status = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $status, $claimID);
+    $success = $stmt->execute();
+    $stmt->close();
+    return $success;
+}
+
+
+
+function get_claim($conn, $id) {
+    $sql = "SELECT * FROM foundreport_claims WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $claim = $result->fetch_assoc();
+    $stmt->close();
+    return $claim;
+}

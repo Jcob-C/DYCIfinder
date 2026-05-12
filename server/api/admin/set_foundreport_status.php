@@ -17,6 +17,7 @@ try {
     if ($inputs['status'] == "Pending" || $inputs['status'] == "Unclaimed") {
         set_claims_statuses($conn, $inputs['id'], "Pending");
         reset_lost_status($conn, $inputs['id']);
+        set_report_owner_type($conn, $inputs['id'], null, null);
     }
     if ($inputs['status'] == "To-claim" || $inputs['status'] == "Claimed") {
         set_claims_statuses($conn, $inputs['id'], "Rejected");

@@ -10,7 +10,11 @@ let runningLoadFoundReportInfo = false;
 let runningUpdateFoundReport = false;
 let runningSaveNewImage = false;
 let runningSetStatus = false;
+let runningSetOwner = false;
+
 let foundReportImageSRC = "";
+let foundReportOwnerPostType = null;
+let ownerPostID = null;
 
 document.addEventListener("DOMContentLoaded", async function () {
     if (foundReportID == null || foundReportID == "") window.location.href = "admin.html";
@@ -18,6 +22,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     loadSelection("found-location-select", "get_campuslocations.php", "location_name");
     loadSelection("found-category-select", "get_itemcategories.php", "category_name");
     await loadFoundReportInfo(); 
+    loadMatchedReport();
     loadClaims();
     loadLosts();
     
@@ -26,6 +31,39 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("upload-image").addEventListener("click", saveNewImage)
     document.getElementById("set-status-btn").addEventListener("click", setStatus)
 });
+
+
+
+async function loadMatchedReport() {
+    if (foundReportOwnerPostType == null || ownerPostID == null) return;
+
+    const result = await fetch(API_URL + "/admin/get_foundreport_owner.php", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            id: ownerPostID, postType: foundReportOwnerPostType
+        })
+    });
+    const response = await result.json();
+    console.log(response);
+
+    document.getElementById("matched-post").style.display = "block";
+    document.getElementById("losts-pcontainer").style.display = "none";
+    document.getElementById("claims-pcontainer").style.display = "none";
+    document.getElementById("owner-proof-photo").src = response.data.image_url;
+    document.getElementById("set-owner-name").textContent = response.data.owner_full_name;
+
+    if (foundReportOwnerPostType == "Lost Report") {
+        document.getElementById("open-owner-details").addEventListener("click", function () { 
+            viewLostDetails(response.data, true);
+        });
+    } 
+    else if (foundReportOwnerPostType == "Claim") {
+        document.getElementById("open-owner-details").addEventListener("click", function () { 
+            viewClaimDetails(response.data, true);
+        });
+    }
+}
 
 
 
@@ -45,7 +83,7 @@ async function loadFoundReportInfo() {
     const fbInput = document.getElementById("found-finder-fb");
     const phoneInput = document.getElementById("found-finder-phone");
     const emailInput = document.getElementById("found-finder-email");
-    const statusSelect = document.getElementById("status-selection")
+    const statusSelect = document.getElementById("status-selection");
 
     let data;
     try {
@@ -83,6 +121,8 @@ async function loadFoundReportInfo() {
     phoneInput.value = data.finder_phone;
     emailInput.value = data.finder_email;
     statusSelect.value = data.report_status;
+    foundReportOwnerPostType = data.ownerpost_type;
+    ownerPostID = data.ownerpost_id;
 
     runningLoadFoundReportInfo = false;
 }
@@ -207,8 +247,9 @@ async function loadClaims() {
         const claimTemplate = document.getElementById("claim-template").content.cloneNode(true);
         claimTemplate.querySelector(".claimant-name").textContent = claim.owner_full_name;
         claimTemplate.querySelector(".claim-image").src = claim.image_url;
+        claimTemplate.querySelector(".claim-status").textContent = claim.claim_status;
         claimTemplate.querySelector(".view-claim-btn").addEventListener("click", () => {
-            viewClaimDetails(claim);
+            viewClaimDetails(claim, false);
         });
         claimsContainer.append(claimTemplate);
     }
@@ -216,7 +257,7 @@ async function loadClaims() {
 
 
 
-function viewClaimDetails(data) {
+function viewClaimDetails(data, removeSetBtn) {
     const claimDetailsTemplate = document.getElementById("viewdetails-claim").content.cloneNode(true);
     const modal = claimDetailsTemplate.querySelector(".popup-overlay");
 
@@ -232,12 +273,16 @@ function viewClaimDetails(data) {
     claimDetailsTemplate.querySelector(".claim-status").textContent = data.claim_status;
 
     claimDetailsTemplate.querySelector(".match-claim-btn").addEventListener("click", () => {
-        
+        setOwner(data.id, "claim");
     });
 
     claimDetailsTemplate.querySelector(".close-claim-btn").addEventListener("click", (e) => {
         modal.remove();
     });
+
+    if (removeSetBtn) {
+        claimDetailsTemplate.querySelector(".match-claim-btn").style.display = "none"
+    }
 
     document.body.append(claimDetailsTemplate);
 }
@@ -262,8 +307,9 @@ async function loadLosts() {
         lostTemplate.querySelector(".lost-owner-name").textContent = lost.owner_full_name;
         lostTemplate.querySelector(".lost-item-name").textContent = lost.item_name;
         lostTemplate.querySelector(".lost-image").src = lost.image_url;
+         lostTemplate.querySelector(".lost-status").textContent = lost.report_status;
         lostTemplate.querySelector(".view-lost-btn").addEventListener("click", () => {
-            viewLostDetails(lost);
+            viewLostDetails(lost, false);
         });
         lostsContainer.append(lostTemplate);
     }
@@ -271,7 +317,7 @@ async function loadLosts() {
 
 
 
-function viewLostDetails(data) {
+function viewLostDetails(data, removeSetBtn) {
     const lostDetailsTemplate = document.getElementById("viewdetails-lost").content.cloneNode(true);
     const modal = lostDetailsTemplate.querySelector(".popup-overlay");
 
@@ -291,12 +337,16 @@ function viewLostDetails(data) {
     lostDetailsTemplate.querySelector(".lost-status").textContent = data.report_status;
 
     lostDetailsTemplate.querySelector(".match-lost-btn").addEventListener("click", () => {
-        
+        setOwner(data.id, "lost");
     });
 
     lostDetailsTemplate.querySelector(".close-lost-btn").addEventListener("click", (e) => {
         modal.remove();
     });
+
+    if (removeSetBtn) {
+        lostDetailsTemplate.querySelector(".match-lost-btn").style.display = "none"
+    }
 
     document.body.append(lostDetailsTemplate);
 }
@@ -318,6 +368,27 @@ async function setStatus() {
     console.log(response);
 
     if (!response.success) popupMessage("Failed to set status.<br>Please try again.");
+    else window.location.reload();
 
     runningSetStatus = false;
+}
+
+
+
+async function setOwner(id, posttype) {
+    if (runningSetOwner) return;
+    runningSetOwner = true;
+
+    const result = await fetch(API_URL + "/admin/set_foundreport_owner.php", {
+        method: "POST", 
+        headers: {"Content-Type":"application/json"}, 
+        body: JSON.stringify({foundID: foundReportID, ownerID: id, postType: posttype})
+    });
+    const response = await result.json();
+    console.log(response);
+
+    if (!response.success) popupMessage("Failed to set owner.<br>Please try again.");
+    else window.location.reload();
+
+    runningSetOwner = false;
 }

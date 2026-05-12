@@ -260,3 +260,17 @@ function set_report_image($conn, $id, $url) {
 
     return $executed;
 }
+
+
+
+function set_report_owner_type($conn, $id, $type, $ownerpostid) {
+    $sql = "UPDATE found_reports SET ownerpost_type = ?, ownerpost_id = ? WHERE id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sii", $type, $ownerpostid, $id);
+
+    $executed = $stmt->execute();
+    $stmt->close();
+
+    return $executed;
+}

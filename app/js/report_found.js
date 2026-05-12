@@ -100,7 +100,7 @@ async function postFoundReport() {
         console.log(response)
 
         if (response.success) {
-            await popupMessage("Thank you! Please drop off the item at the office to proceed.<br><br>Your report's ID is: " + response.data['found_report_id']);
+            await popupMessage("Thank you! Your report's ID is: " + response.data['found_report_id'] + "<br> To proceed, please drop off the item at the<br><br>Office of Student Affairs (OSA) in Elida Campus");
         }
         else throw new Error();
     }

@@ -23,7 +23,7 @@
         }
 
         .col-right {
-            width: 450px;
+            width: 50%;
             flex-shrink: 0;
             position: sticky;
             top: 90px;
@@ -622,14 +622,14 @@
                 <div id="matched-post" style="display: none;">
                     <h2>Matched Owner Post</h2>
                     <div>
-                        <img alt="Owner post image">
-                        <p>Selected Owner: <span></span></p>
-                        <button>View Details</button>
+                        <img alt="Owner post image" src="./assets/loading.gif" id="owner-proof-photo">
+                        <p>Selected Owner: <span id="set-owner-name"></span></p>
+                        <button id="open-owner-details">View Details</button>
                     </div>
                 </div>
 
                 <!-- CLAIMS -->
-                <div class="mb-4">
+                <div class="mb-4" id="losts-pcontainer">
                     <h2 class="section-heading">Claims</h2>
                     <div id="claim-container">
                         <template id="claim-template">
@@ -637,6 +637,7 @@
                                 <img class="claim-image" alt="Claim Image">
                                 <div class="claim-body">
                                     <p>Claimant: <span class="claimant-name"></span></p>
+                                    <p>Status: <span class="claim-status"></span></p>
                                     <button class="view-claim-btn">View Details</button>
                                 </div>
                             </div>
@@ -645,7 +646,7 @@
                 </div>
 
                 <!-- LOST REPORTS -->
-                <div class="mb-4">
+                <div class="mb-4" id="claims-pcontainer">
                     <h2 class="section-heading">Lost Reports</h2>
                     <div id="lost-container">
                         <template id="lost-template">
@@ -654,6 +655,7 @@
                                 <div class="lost-body">
                                     <p>Item: <span class="lost-item-name"></span></p>
                                     <p>Owner: <span class="lost-owner-name"></span></p>
+                                    <p>Status: <span class="lost-status"></span></p>
                                     <button class="view-lost-btn">View Details</button>
                                 </div>
                             </div>
@@ -688,7 +690,7 @@
                 <p>Status: <span class="claim-status">—</span></p>
                 <p>Submitted: <span class="claim-created-at">—</span></p>
                 <div class="popup-actions">
-                    <button class="match-claim-btn">Match</button>
+                    <button class="match-claim-btn">Set Owner</button>
                     <button class="close-claim-btn">Close</button>
                 </div>
             </div>
@@ -716,7 +718,7 @@
                 <p>Status: <span class="lost-status">—</span></p>
                 <p>Submitted: <span class="lost-created-at">—</span></p>
                 <div class="popup-actions">
-                    <button class="match-lost-btn">Match</button>
+                    <button class="match-lost-btn">Set Owner</button>
                     <button class="close-lost-btn">Close</button>
                 </div>
             </div>

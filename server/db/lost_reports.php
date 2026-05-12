@@ -72,11 +72,44 @@ function get_user_lostreports($conn, $page, $userID) {
 
 
 function get_losts($conn) {
-    $sql = "SELECT * FROM lost_reports";
+    $sql = "SELECT * FROM lost_reports WHERE report_status = 'Lost'";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
     $data = $result->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
     return $data;
+}
+
+
+
+function reset_lost_status($conn, $foundid) {
+    $sql = "UPDATE lost_reports SET report_status = 'Lost' WHERE foundreport_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $foundid);
+    $stmt->execute();
+    $stmt->close();
+}
+
+
+
+function set_lost_status($conn, $id, $status, $reportID) {
+    $sql = "UPDATE lost_reports SET report_status = ?, foundreport_id = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sii", $status, $reportID, $id);
+    $stmt->execute();
+    $stmt->close();
+}
+
+
+
+function get_lost_report($conn, $id) {
+    $sql = "SELECT * FROM lost_reports WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $report = $result->fetch_assoc();
+    $stmt->close();
+    return $report;
 }
