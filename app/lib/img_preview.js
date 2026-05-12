@@ -13,6 +13,7 @@ export function previewImage(input, previewId, removeBtnId) {
         preview.src = e.target.result;
         preview.style.display = "block";
         removeBtn.style.display = "inline-block";
+        document.getElementById("upload-area-container").style.display = "none";
     };
 
     reader.readAsDataURL(input.files[0]);
@@ -29,6 +30,7 @@ export function clearImage(inputId, previewId, removeBtnId) {
     preview.src = "";
     preview.style.display = "none";
     removeBtn.style.display = "none";
+    document.getElementById("upload-area-container").style.display = "block";
 }
 
 
