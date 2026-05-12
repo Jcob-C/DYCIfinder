@@ -10,7 +10,14 @@ admin_block();
 
 try {
     $conn = new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
-    $output = get_losts($conn);
+
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+    $keyword = isset($input['keyword']) ? $input['keyword'] : '';
+    $category = isset($input['category']) ? $input['category'] : '';
+    $location = isset($input['location']) ? $input['location'] : '';
+    $order = isset($input['order']) ? $input['order'] : 'Newest first';
+
+    $output = get_losts($conn, $keyword, $category, $location, $order);
 
     echo json_encode([
         "success" => true,

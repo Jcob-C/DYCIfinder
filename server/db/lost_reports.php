@@ -71,9 +71,53 @@ function get_user_lostreports($conn, $page, $userID) {
 
 
 
-function get_losts($conn) {
+function get_losts($conn, $keyword = "", $category = "", $location = "", $order = "Newest first") {
     $sql = "SELECT * FROM lost_reports WHERE report_status = 'Lost'";
+    $types = '';
+    $params = [];
+
+    $keyword = trim($keyword);
+    $category = trim($category);
+    $location = trim($location);
+    $order = trim($order);
+
+    if ($keyword !== "") {
+        $sql .= " AND (item_name LIKE ? OR owner_full_name LIKE ? OR item_desc LIKE ?)";
+        $types .= 'sss';
+        $keywordParam = '%' . $keyword . '%';
+        $params[] = $keywordParam;
+        $params[] = $keywordParam;
+        $params[] = $keywordParam;
+    }
+
+    if ($category !== "" && $category !== "Any" && $category !== "N/A") {
+        $sql .= " AND item_category = ?";
+        $types .= 's';
+        $params[] = $category;
+    }
+
+    if ($location !== "" && $location !== "Anywhere" && $location !== "N/A") {
+        $sql .= " AND lost_location = ?";
+        $types .= 's';
+        $params[] = $location;
+    }
+
+    if ($order === 'Oldest first') {
+        $sql .= " ORDER BY id ASC";
+    } else {
+        $sql .= " ORDER BY id DESC";
+    }
+
     $stmt = $conn->prepare($sql);
+
+    if ($types !== "") {
+        $bindParams = [$types];
+        foreach ($params as $key => $value) {
+            $bindParams[] = &$params[$key];
+        }
+        call_user_func_array([$stmt, 'bind_param'], $bindParams);
+    }
+
     $stmt->execute();
     $result = $stmt->get_result();
     $data = $result->fetch_all(MYSQLI_ASSOC);

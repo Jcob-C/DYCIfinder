@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     loadSelection("found-location-select", "get_campuslocations.php", "location_name");
     loadSelection("found-category-select", "get_itemcategories.php", "category_name");
+    loadSelection("lost-location-selection", "get_campuslocations.php", "location_name");
+    loadSelection("lost-category-selection", "get_itemcategories.php", "category_name");
     await loadFoundReportInfo(); 
     loadMatchedReport();
     loadClaims();
@@ -30,6 +32,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("foundpost-image").addEventListener("change", function () { replaceImage(this, "found-image", foundReportImageSRC); })
     document.getElementById("upload-image").addEventListener("click", saveNewImage)
     document.getElementById("set-status-btn").addEventListener("click", setStatus)
+    document.getElementById("lost-apply-filters-btn").addEventListener("click", loadLosts)
 });
 
 
@@ -291,8 +294,16 @@ function viewClaimDetails(data, removeSetBtn) {
 
 async function loadLosts() {
     const lostsContainer = document.getElementById("lost-container");
+    const keyword = document.getElementById("lost-keyword-input").value.trim();
+    const category = document.getElementById("lost-category-selection").value;
+    const location = document.getElementById("lost-location-selection").value;
+    const order = document.getElementById("lost-sort-options").value;
 
-    const result = await fetch(API_URL + "/admin/get_losts.php");
+    const result = await fetch(API_URL + "/admin/get_losts.php", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ keyword, category, location, order })
+    });
     const response = await result.json();
     console.log(response);
 
@@ -301,13 +312,17 @@ async function loadLosts() {
         return; 
     }
 
+    Array.from(lostsContainer.children).forEach(child => {
+        if (child.tagName !== "TEMPLATE") child.remove();
+    });
+
     for (let i = 0; i < response.data.length; i++) {
         const lost = response.data[i];
         const lostTemplate = document.getElementById("lost-template").content.cloneNode(true);
         lostTemplate.querySelector(".lost-owner-name").textContent = lost.owner_full_name;
         lostTemplate.querySelector(".lost-item-name").textContent = lost.item_name;
         lostTemplate.querySelector(".lost-image").src = lost.image_url;
-         lostTemplate.querySelector(".lost-status").textContent = lost.report_status;
+        lostTemplate.querySelector(".lost-status").textContent = lost.report_status;
         lostTemplate.querySelector(".view-lost-btn").addEventListener("click", () => {
             viewLostDetails(lost, false);
         });

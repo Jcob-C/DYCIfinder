@@ -645,9 +645,48 @@
                     </div>
                 </div>
 
+                
+
                 <!-- LOST REPORTS -->
                 <div class="mb-4" id="losts-pcontainer">
                     <h2 class="section-heading">Lost Reports</h2>
+                    <!-- LOST REPORTS FILTERS -->
+                    <div class="card-surface p-3 mb-3">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label-custom" for="lost-keyword-input">Keyword</label>
+                                <input class="form-control-custom" id="lost-keyword-input" type="text" placeholder="e.g. wallet, phone…">
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label-custom" for="lost-category-selection">Category</label>
+                                <div class="select-wrapper">
+                                    <select class="form-control-custom" id="lost-category-selection">
+                                        <option>Any</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label-custom" for="lost-location-selection">Location</label>
+                                <div class="select-wrapper">
+                                    <select class="form-control-custom" id="lost-location-selection">
+                                        <option>Anywhere</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label-custom" for="lost-sort-options">Sort by</label>
+                                <div class="select-wrapper">
+                                    <select class="form-control-custom" id="lost-sort-options">
+                                        <option>Newest first</option>
+                                        <option>Oldest first</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button id="lost-apply-filters-btn" class="btn-primary-custom">Apply Filters</button>
+                            </div>
+                        </div>
+                    </div>
                     <div id="lost-container">
                         <template id="lost-template">
                             <div class="lost">
